@@ -1,0 +1,1391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>COVERED: NO WAY OUT</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;600;700&family=Share+Tech+Mono&display=swap');
+:root{--blood:#c0392b;--dark:#7b1a12;--yellow:#f39c12;--green:#27ae60;--blue:#2980b9;
+--bg:#070707;--panel:#0d0d0d;--p2:#111;--bdr:#1e1e1e;--bdr2:#2a2a2a;
+--txt:#bbb;--dim:#555;--wht:#eee;}
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{height:100%;overflow:hidden;background:var(--bg);color:var(--txt);font-family:"Rajdhani",sans-serif;}
+body::after{content:"";position:fixed;inset:0;background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,0.08) 3px,rgba(0,0,0,0.08) 4px);pointer-events:none;z-index:9999;}
+#app{display:grid;grid-template-columns:250px 1fr 250px;grid-template-rows:56px 1fr 185px;height:100vh;}
+#topbar{grid-column:1/-1;background:#050505;border-bottom:1px solid var(--bdr2);display:flex;align-items:center;justify-content:space-between;padding:0 18px;}
+.gtitle{font-family:"Bebas Neue",cursive;font-size:26px;color:var(--blood);letter-spacing:4px;text-shadow:0 0 20px rgba(192,57,43,0.35);}
+.top-stats{display:flex;gap:22px;}
+.ts{text-align:center;}
+.ts-lbl{font-size:9px;color:var(--dim);letter-spacing:2px;text-transform:uppercase;}
+.ts-val{font-family:"Bebas Neue",cursive;font-size:21px;line-height:1;}
+.daybox{font-family:"Share Tech Mono",monospace;font-size:11px;color:var(--dim);text-align:right;}
+#lpanel{background:var(--panel);border-right:1px solid var(--bdr);padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;}
+.ps{background:rgba(0,0,0,0.35);border:1px solid var(--bdr);padding:11px;}
+.ps-t{font-family:"Bebas Neue",cursive;font-size:13px;letter-spacing:3px;margin-bottom:9px;}
+.br{margin:5px 0;}
+.br-lbl{display:flex;justify-content:space-between;font-size:10px;margin-bottom:2px;}
+.br-nm{color:var(--dim);text-transform:uppercase;letter-spacing:1px;font-size:10px;}
+.br-v{font-family:"Share Tech Mono",monospace;font-size:10px;}
+.br-tr{height:7px;background:#080808;border:1px solid var(--bdr);overflow:hidden;}
+.br-fi{height:100%;transition:width 0.45s;}
+.bfhp{background:linear-gradient(90deg,#7b1a12,#c0392b);}
+.bfen{background:linear-gradient(90deg,#1a3a5c,#2980b9);}
+.bfst{background:linear-gradient(90deg,#6d4c00,#f39c12);}
+.bfdd{background:linear-gradient(90deg,#1a3a1a,#27ae60);}
+.mny{font-family:"Bebas Neue",cursive;font-size:30px;color:var(--green);line-height:1;}
+.mny.broke{color:var(--blood);}
+.ctag{display:inline-block;font-size:10px;padding:2px 6px;border:1px solid;margin:2px;font-family:"Share Tech Mono",monospace;}
+.ct-bad{border-color:var(--blood);color:var(--blood);background:rgba(192,57,43,0.08);}
+.ct-ok{border-color:var(--green);color:var(--green);background:rgba(39,174,96,0.08);}
+.objbox{background:rgba(243,156,18,0.06);border:1px solid rgba(243,156,18,0.25);padding:10px;}
+.obj-t{font-family:"Bebas Neue",cursive;font-size:12px;letter-spacing:3px;color:var(--yellow);margin-bottom:6px;}
+.obj-row{font-size:11px;padding:4px 0;display:flex;gap:6px;border-bottom:1px solid rgba(255,255,255,0.04);}
+.obj-row.done{color:var(--dim);text-decoration:line-through;}
+.obj-row.active{color:var(--wht);font-weight:700;}
+.obj-row.locked{color:#2a2a2a;}
+.obj-n{font-family:"Bebas Neue",cursive;font-size:14px;min-width:18px;}
+.on-done{color:var(--green);}.on-active{color:var(--yellow);}
+#world{background:#080a08;position:relative;overflow:hidden;}
+#mapview{width:100%;height:100%;position:relative;}
+.mapbg{position:absolute;inset:0;background-color:#060906;
+background-image:repeating-linear-gradient(0deg,transparent,transparent 45px,rgba(255,255,255,0.015) 45px,rgba(255,255,255,0.015) 46px),
+repeating-linear-gradient(90deg,transparent,transparent 45px,rgba(255,255,255,0.015) 45px,rgba(255,255,255,0.015) 46px);}
+.loc{position:absolute;cursor:pointer;text-align:center;transform:translate(-50%,-50%);transition:transform 0.2s;}
+.loc:hover .lic{transform:scale(1.18);}
+.loc.atgt .lic{animation:tpulse 1s infinite;}
+@keyframes tpulse{0%,100%{transform:scale(1)}50%{transform:scale(1.12)}}
+.lic{width:56px;height:56px;border-radius:50%;border:2px solid var(--lc);background:rgba(0,0,0,0.85);display:flex;align-items:center;justify-content:center;font-size:24px;margin:0 auto 3px;transition:all 0.2s;}
+.lnm{font-family:"Bebas Neue",cursive;font-size:12px;letter-spacing:2px;color:var(--lc);}
+.lhint{font-size:9px;color:var(--dim);font-family:"Share Tech Mono",monospace;max-width:80px;margin:0 auto;}
+#pdot{position:absolute;width:13px;height:13px;background:var(--yellow);border-radius:50%;border:2px solid white;transition:all 0.55s cubic-bezier(.34,1.56,.64,1);z-index:10;box-shadow:0 0 12px var(--yellow);transform:translate(-50%,-50%);}
+#rpanel{background:var(--panel);border-left:1px solid var(--bdr);padding:12px;overflow-y:auto;display:flex;flex-direction:column;gap:10px;}
+.inscard{background:linear-gradient(135deg,#0a1a0a,#070f07);border:1px solid #1a3a1a;padding:12px;}
+.ins-pn{font-family:"Bebas Neue",cursive;font-size:15px;color:var(--green);letter-spacing:2px;margin-bottom:7px;}
+.ins-r{display:flex;justify-content:space-between;font-size:11px;padding:3px 0;border-bottom:1px solid rgba(255,255,255,0.04);}
+.ins-k{color:var(--dim);}
+.ins-v{font-family:"Share Tech Mono",monospace;color:var(--wht);}
+.ins-v.bad{color:var(--blood);}
+#bottom{grid-column:1/-1;background:var(--panel);border-top:1px solid var(--bdr2);display:grid;grid-template-columns:1fr 320px;overflow:hidden;}
+#elog{padding:10px 14px;overflow-y:auto;display:flex;flex-direction:column-reverse;gap:3px;}
+.le{font-size:11px;font-family:"Share Tech Mono",monospace;padding:2px 0;border-bottom:1px solid rgba(255,255,255,0.025);}
+.le.danger{color:var(--blood);}.le.good{color:var(--green);}.le.warn{color:var(--yellow);}.le.info{color:var(--blue);}.le.dim{color:var(--dim);}
+#apanel{border-left:1px solid var(--bdr);padding:13px;display:flex;flex-direction:column;gap:7px;overflow-y:auto;}
+.ap-t{font-family:"Bebas Neue",cursive;font-size:15px;color:var(--yellow);letter-spacing:3px;}
+.abtn{background:rgba(255,255,255,0.025);border:1px solid var(--bdr2);color:var(--txt);padding:8px 11px;cursor:pointer;font-family:"Rajdhani",sans-serif;font-size:13px;font-weight:600;text-align:left;transition:all 0.14s;display:flex;justify-content:space-between;align-items:center;width:100%;}
+.abtn:hover{background:rgba(255,255,255,0.06);border-color:var(--yellow);color:var(--wht);transform:translateX(2px);}
+.abtn.da:hover{border-color:var(--blood);background:rgba(192,57,43,0.08);}
+.abtn.ga:hover{border-color:var(--green);background:rgba(39,174,96,0.08);}
+.abtn.key{border-color:rgba(243,156,18,0.4);background:rgba(243,156,18,0.05);}
+.abtn.key:hover{border-color:var(--yellow);background:rgba(243,156,18,0.12);}
+.ac{font-size:10px;font-family:"Share Tech Mono",monospace;color:var(--dim);}
+.ac.bad{color:var(--blood);}.ac.good{color:var(--green);}.ac.warn{color:var(--yellow);}
+#moverlay{position:fixed;inset:0;background:rgba(0,0,0,0.93);z-index:1000;display:none;align-items:center;justify-content:center;}
+#moverlay.on{display:flex;}
+#mbox{background:var(--p2);border:1px solid var(--bdr2);max-width:580px;width:92%;max-height:88vh;overflow-y:auto;}
+.mhdr{padding:14px 18px;font-family:"Bebas Neue",cursive;font-size:20px;letter-spacing:4px;}
+.mhdr.red{background:var(--blood);color:#fff;}
+.mhdr.green{background:rgba(39,174,96,0.85);color:#000;}
+.mhdr.yellow{background:rgba(243,156,18,0.85);color:#000;}
+.mhdr.blue{background:rgba(41,128,185,0.85);color:#fff;}
+.mbody{padding:18px;}
+.mtxt{font-size:13px;line-height:1.9;color:var(--txt);margin-bottom:14px;}
+.mtxt strong{color:var(--wht);}.mtxt .d{color:var(--blood);}.mtxt .h{color:var(--yellow);}.mtxt .g{color:var(--green);}
+.mchoices{display:flex;flex-direction:column;gap:7px;}
+.mc{background:rgba(255,255,255,0.025);border:1px solid var(--bdr2);padding:11px 14px;cursor:pointer;font-family:"Rajdhani",sans-serif;font-size:14px;font-weight:600;text-align:left;transition:all 0.14s;display:flex;justify-content:space-between;align-items:center;width:100%;}
+.mc:hover{background:rgba(255,255,255,0.06);border-color:var(--yellow);color:var(--wht);}
+.mc-h{font-size:10px;font-family:"Share Tech Mono",monospace;color:var(--dim);}
+.mc-h.bad{color:var(--blood);}.mc-h.good{color:var(--green);}.mc-h.warn{color:var(--yellow);}
+.mcont{background:var(--blood);border:none;color:white;padding:11px 28px;font-family:"Bebas Neue",cursive;font-size:17px;letter-spacing:4px;cursor:pointer;width:100%;margin-top:11px;}
+#notif{position:fixed;top:66px;right:16px;z-index:500;display:flex;flex-direction:column;gap:7px;pointer-events:none;}
+.nm{background:rgba(0,0,0,0.96);border-left:3px solid var(--blood);padding:9px 13px;font-size:11px;font-family:"Share Tech Mono",monospace;animation:na 3.2s forwards;min-width:200px;}
+.nm.good{border-color:var(--green);}.nm.warn{border-color:var(--yellow);}.nm.info{border-color:var(--blue);}
+@keyframes na{0%{opacity:0;transform:translateX(18px)}10%{opacity:1;transform:none}80%{opacity:1}100%{opacity:0;transform:translateX(18px)}}
+#titlescreen,#charscreen{position:fixed;inset:0;background:#000;z-index:3000;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;overflow-y:auto;padding:20px;}
+#charscreen{display:none;}
+.ts-h1{font-family:"Bebas Neue",cursive;font-size:100px;color:var(--blood);letter-spacing:6px;text-shadow:0 0 50px rgba(192,57,43,0.35);line-height:1;animation:flk 5s infinite;}
+@keyframes flk{0%,94%,100%{opacity:1}95%{opacity:0.3}96%{opacity:1}98%{opacity:0.15}99%{opacity:1}}
+.ts-h2{font-family:"Bebas Neue",cursive;font-size:24px;color:#222;letter-spacing:8px;margin:6px 0;}
+.ts-sub{font-family:"Share Tech Mono",monospace;font-size:12px;color:var(--dim);letter-spacing:3px;}
+.ts-line{width:180px;height:2px;background:var(--blood);margin:18px auto;box-shadow:0 0 8px var(--blood);}
+.ts-body{max-width:460px;font-size:13px;color:#3a3a3a;line-height:2;margin:12px 0;}
+.ts-warn{border:1px solid #1a1a1a;padding:11px 16px;font-size:11px;color:#2a2a2a;max-width:450px;line-height:1.8;margin-bottom:18px;}
+.enterbtn{background:var(--blood);border:none;color:white;padding:14px 48px;font-family:"Bebas Neue",cursive;font-size:22px;letter-spacing:6px;cursor:pointer;transition:all 0.2s;box-shadow:0 0 25px rgba(192,57,43,0.35);}
+.enterbtn:hover{transform:scale(1.05);}
+.cg{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:18px;max-width:980px;width:100%;margin:16px auto;}
+.cc{background:var(--p2);border:1px solid var(--bdr2);padding:18px;cursor:pointer;transition:all 0.2s;position:relative;text-align:left;}
+.cc:hover{border-color:var(--blood);transform:translateY(-3px);box-shadow:0 8px 25px rgba(192,57,43,0.25);}
+.cc-icon{font-size:46px;margin-bottom:10px;}
+.cc-name{font-family:"Bebas Neue",cursive;font-size:22px;color:var(--wht);letter-spacing:2px;}
+.cc-desc{font-size:11px;color:var(--txt);line-height:1.7;margin:6px 0 10px;}
+.cc-plan{background:rgba(39,174,96,0.07);border:1px solid rgba(39,174,96,0.18);padding:9px;font-size:11px;}
+.cc-pn{color:var(--green);font-family:"Share Tech Mono",monospace;margin-bottom:5px;}
+.cc-st{display:flex;justify-content:space-between;padding:2px 0;color:var(--dim);border-bottom:1px solid rgba(255,255,255,0.04);}
+.cc-st span:last-child{color:var(--txt);font-family:"Share Tech Mono",monospace;}
+.diff{position:absolute;top:10px;right:10px;font-size:9px;padding:3px 7px;border:1px solid;font-family:"Share Tech Mono",monospace;letter-spacing:2px;}
+.d-e{border-color:var(--green);color:var(--green);}
+.d-m{border-color:var(--yellow);color:var(--yellow);}
+.d-h{border-color:var(--blood);color:var(--blood);}
+.d-nm{border-color:#444;color:#444;animation:flk 2s infinite;}
+.cc.raycard{border-color:rgba(192,57,43,0.3);}
+#deathscreen{position:fixed;inset:0;background:#000;z-index:2000;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;}
+.dh{font-family:"Bebas Neue",cursive;font-size:90px;color:var(--blood);text-shadow:0 0 60px rgba(192,57,43,0.35);line-height:1;animation:dp 2s infinite;}
+@keyframes dp{0%,100%{opacity:1}50%{opacity:0.6}}
+.dc{font-family:"Bebas Neue",cursive;font-size:26px;color:var(--yellow);letter-spacing:6px;margin:14px 0;}
+.dstats{background:rgba(255,255,255,0.02);border:1px solid var(--bdr2);padding:18px 26px;margin:16px;max-width:460px;width:90%;text-align:left;}
+.dsr{display:flex;justify-content:space-between;font-size:13px;padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05);}
+.dless{max-width:480px;font-size:12px;line-height:2;color:var(--dim);border-left:3px solid var(--blood);padding-left:14px;text-align:left;margin:8px;}
+.restartbtn{background:transparent;border:2px solid var(--blood);color:var(--blood);padding:11px 38px;font-family:"Bebas Neue",cursive;font-size:20px;letter-spacing:6px;cursor:pointer;margin-top:18px;transition:all 0.2s;}
+.restartbtn:hover{background:var(--blood);color:white;}
+#winscreen{position:fixed;inset:0;background:#000;z-index:2000;display:none;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:20px;}
+.wh{font-family:"Bebas Neue",cursive;font-size:80px;color:var(--green);text-shadow:0 0 60px rgba(39,174,96,0.4);line-height:1;}
+</style>
+</head>
+<body>
+
+<div id="titlescreen">
+  <div class="ts-h1">COVERED</div>
+  <div class="ts-h2">NO WAY OUT</div>
+  <div class="ts-sub">AN AMERICAN HEALTHCARE SURVIVAL GAME</div>
+  <div class="ts-line"></div>
+  <div class="ts-body">You are one diagnosis away from losing everything.<br>Navigate the city. Fight the insurance system.<br>Work. Borrow. Steal. Or die trying to afford care.</div>
+  <div class="ts-warn">Based on real U.S. healthcare mechanics.<br>Prior auth. Deductibles. Surprise billing. Coverage cliffs.<br>530,000 Americans go bankrupt from medical bills every year.</div>
+  <button class="enterbtn" id="startbtn">START SURVIVING</button>
+</div>
+
+<div id="charscreen">
+  <div style="font-family:Bebas Neue,cursive;font-size:36px;color:var(--blood);letter-spacing:4px;">CHOOSE YOUR SURVIVOR</div>
+  <div style="font-size:11px;color:var(--dim);margin-bottom:8px;">Your insurance plan determines your fate</div>
+  <div class="cg" id="chargrid"></div>
+  <div style="font-size:11px;color:#222;margin-top:16px;font-family:Share Tech Mono,monospace;">RAY IS FULLY SCRIPTED  |  OTHERS: SANDBOX</div>
+</div>
+
+<div id="app" style="display:none;">
+  <div id="topbar">
+    <div class="gtitle">COVERED: NO WAY OUT</div>
+    <div class="top-stats">
+      <div class="ts"><div class="ts-lbl">Health</div><div class="ts-val" id="sv-hp" style="color:var(--blood);">100</div></div>
+      <div class="ts"><div class="ts-lbl">Energy</div><div class="ts-val" id="sv-en" style="color:var(--blue);">100</div></div>
+      <div class="ts"><div class="ts-lbl">Stress</div><div class="ts-val" id="sv-st" style="color:var(--yellow);">0</div></div>
+      <div class="ts"><div class="ts-lbl">Cash</div><div class="ts-val" id="sv-ca" style="color:var(--green);">$0</div></div>
+      <div class="ts"><div class="ts-lbl">Debt</div><div class="ts-val" id="sv-de" style="color:#e74c3c;">$0</div></div>
+    </div>
+    <div class="daybox">DAY <span id="daynum">1</span> &nbsp;|&nbsp; <span id="tod">MORNING</span></div>
+  </div>
+  <div id="lpanel">
+    <div class="ps">
+      <div class="ps-t" style="color:var(--blood);">VITALS</div>
+      <div class="br"><div class="br-lbl"><span class="br-nm">Health</span><span class="br-v" id="bar-hp-v">100</span></div><div class="br-tr"><div class="br-fi bfhp" id="bar-hp" style="width:100%"></div></div></div>
+      <div class="br"><div class="br-lbl"><span class="br-nm">Energy</span><span class="br-v" id="bar-en-v">100</span></div><div class="br-tr"><div class="br-fi bfen" id="bar-en" style="width:100%"></div></div></div>
+      <div class="br"><div class="br-lbl"><span class="br-nm">Stress</span><span class="br-v" id="bar-st-v">0</span></div><div class="br-tr"><div class="br-fi bfst" id="bar-st" style="width:0%"></div></div></div>
+    </div>
+    <div class="objbox">
+      <div class="obj-t">OBJECTIVE</div>
+      <div id="objlist"></div>
+    </div>
+    <div class="ps">
+      <div class="ps-t" style="color:var(--yellow);">CONDITIONS</div>
+      <div id="condlist" style="font-size:11px;color:var(--dim);">None</div>
+    </div>
+    <div class="ps">
+      <div class="ps-t" style="color:var(--green);">MEDICATIONS</div>
+      <div id="medlist" style="font-size:11px;color:var(--dim);">None</div>
+    </div>
+    <div class="ps">
+      <div class="ps-t" style="color:var(--dim);">FINANCES</div>
+      <div class="mny" id="cashbig">$0</div>
+      <div style="font-size:11px;color:var(--blood);margin-top:3px;">Debt: <span id="debtval" style="font-family:Share Tech Mono,monospace;">$0</span></div>
+    </div>
+  </div>
+  <div id="world">
+    <div id="mapview">
+      <div class="mapbg"></div>
+      <div id="loclayer"></div>
+      <div id="pdot"></div>
+    </div>
+  </div>
+  <div id="rpanel">
+    <div class="inscard">
+      <div class="ins-pn" id="ins-pn">NO COVERAGE</div>
+      <div class="ins-r"><span class="ins-k">Deductible</span><span class="ins-v" id="ins-ded">--</span></div>
+      <div class="ins-r"><span class="ins-k">Met So Far</span><span class="ins-v" id="ins-met">$0</span></div>
+      <div class="ins-r"><span class="ins-k">Coinsurance</span><span class="ins-v" id="ins-coin">--</span></div>
+      <div class="ins-r"><span class="ins-k">ER Copay</span><span class="ins-v" id="ins-er">--</span></div>
+      <div class="ins-r"><span class="ins-k">OOP Max</span><span class="ins-v" id="ins-oop">--</span></div>
+      <div class="ins-r"><span class="ins-k">Network</span><span class="ins-v" id="ins-net">--</span></div>
+      <div class="br" style="margin-top:8px;">
+        <div class="br-lbl"><span class="br-nm" style="font-size:9px;">DEDUCTIBLE MET</span><span class="br-v" id="ded-pct" style="font-size:9px;">0%</span></div>
+        <div class="br-tr"><div class="br-fi bfdd" id="ded-bar" style="width:0%"></div></div>
+      </div>
+    </div>
+    <div class="ps">
+      <div class="ps-t" style="color:var(--yellow);">ACTIVE CLAIMS</div>
+      <div id="claimsp" style="font-size:11px;color:var(--dim);">None</div>
+    </div>
+    <div class="ps">
+      <div class="ps-t" style="color:var(--dim);font-size:11px;">RIGHTS UNLOCKED</div>
+      <div id="rightsp" style="font-size:10px;color:#333;line-height:1.7;font-family:Share Tech Mono,monospace;">Make decisions to unlock your legal rights.</div>
+    </div>
+  </div>
+  <div id="bottom">
+    <div id="elog"><div class="le info">// COVERED: NO WAY OUT -- INITIALIZED</div></div>
+    <div id="apanel">
+      <div class="ap-t" id="ap-title">SELECT LOCATION</div>
+      <div id="actions"></div>
+    </div>
+  </div>
+</div>
+
+<div id="moverlay">
+  <div id="mbox">
+    <div class="mhdr red" id="mhdr">EVENT</div>
+    <div class="mbody">
+      <div class="mtxt" id="mtxt"></div>
+      <div class="mchoices" id="mchoices"></div>
+      <button class="mcont" id="mcont">CONTINUE</button>
+    </div>
+  </div>
+</div>
+<div id="notif"></div>
+<div id="deathscreen">
+  <div class="dh" id="dh">YOU DIED</div>
+  <div class="dc" id="dc">CAUSE OF DEATH</div>
+  <div class="dstats" id="dstats"></div>
+  <div class="dless" id="dless"></div>
+  <button class="restartbtn" id="restartbtn">TRY AGAIN</button>
+</div>
+<div id="winscreen">
+  <div class="wh">SURVIVED</div>
+  <div style="font-family:Bebas Neue,cursive;font-size:24px;color:var(--dim);letter-spacing:6px;margin:12px 0;">YOU NAVIGATED THE SYSTEM</div>
+  <div id="winstats" style="background:rgba(255,255,255,0.02);border:1px solid var(--bdr2);padding:18px 26px;max-width:460px;width:90%;text-align:left;margin:14px auto;"></div>
+  <div id="winless" style="max-width:480px;font-size:12px;line-height:2;color:var(--dim);border-left:3px solid var(--green);padding-left:14px;text-align:left;margin:8px;"></div>
+  <button class="restartbtn" style="border-color:var(--green);color:var(--green);" id="winrestart">PLAY AGAIN</button>
+</div>
+
+<script>
+// ============================================================
+// CONSTANTS
+// ============================================================
+
+var TIMES = ['MORNING','AFTERNOON','EVENING','NIGHT'];
+
+var CHARS = [
+  { id:'ray', icon:'X_RAY', name:'Ray Holloway', age:52,
+    story:'Lost job 8 months ago. COBRA expired. Uninsured. Makes $180/wk cash. Type 2 Diabetes. No insulin in 4 days.',
+    diff:'NIGHTMARE', diffCls:'d-nm', rayArc:true,
+    plan:{ name:'NO INSURANCE', ded:0, coin:100, erCopay:0, oop:0, net:'NONE', premium:0 },
+    cash:160, hp:55, en:45, stress:65,
+    conds:[{n:'Type 2 Diabetes', ok:false, sev:3, drain:1.8}],
+    meds:[{n:'Insulin', cost:280, filled:false, days:0}]
+  },
+  { id:'gig', icon:'X_GIG', name:'Jordan Cruz', age:24,
+    story:'DoorDash driver. Cheapest ACA Bronze plan. $7,500 deductible. One ER visit from ruin.',
+    diff:'HARD', diffCls:'d-h', rayArc:false,
+    plan:{ name:'Bronze HMO', ded:7500, coin:40, erCopay:350, oop:9100, net:'HMO', premium:189 },
+    cash:780, hp:100, en:90, stress:20,
+    conds:[], meds:[]
+  },
+  { id:'cobra', icon:'X_COBRA', name:'Diane Park', age:41,
+    story:'Laid off. On COBRA at $780/month. Savings draining. Good coverage -- for now.',
+    diff:'MEDIUM', diffCls:'d-m', rayArc:false,
+    plan:{ name:'Blue Shield PPO (COBRA)', ded:1500, coin:20, erCopay:100, oop:5000, net:'PPO', premium:780 },
+    cash:4200, hp:90, en:80, stress:40,
+    conds:[], meds:[]
+  },
+  { id:'unins', icon:'X_UNINS', name:'No Insurance', age:0,
+    story:'Sandbox mode. No coverage, no story arc. Raw brutality of the system.',
+    diff:'NIGHTMARE', diffCls:'d-nm', rayArc:false,
+    plan:{ name:'NO INSURANCE', ded:0, coin:100, erCopay:0, oop:0, net:'NONE', premium:0 },
+    cash:300, hp:70, en:60, stress:50,
+    conds:[], meds:[]
+  }
+];
+
+var ICONS = { X_RAY:'X', X_GIG:'X', X_COBRA:'X', X_UNINS:'X' };
+
+var LOCS = [
+  {id:'home',    n:'HOME',         em:'home',    c:'#5d6d7e', x:14, y:52, hint:'rest & meds'},
+  {id:'job',     n:'WORK/GIG',     em:'job',     c:'#d4ac0d', x:68, y:18, hint:'earn money'},
+  {id:'er',      n:'EMERGENCY RM', em:'er',      c:'#c0392b', x:82, y:68, hint:'emergency'},
+  {id:'urgent',  n:'URGENT CARE',  em:'urgent',  c:'#e67e22', x:54, y:38, hint:'faster/cheaper'},
+  {id:'doctor',  n:'PRIMARY CARE', em:'doctor',  c:'#2980b9', x:28, y:28, hint:'PCP/referrals'},
+  {id:'specialist',n:'SPECIALIST', em:'spec',    c:'#8e44ad', x:48, y:72, hint:'needs referral'},
+  {id:'pharmacy',n:'PHARMACY',     em:'rx',      c:'#27ae60', x:18, y:78, hint:'fill prescriptions'},
+  {id:'hospital',n:'HOSPITAL',     em:'hosp',    c:'#c0392b', x:84, y:36, hint:'inpatient care'},
+  {id:'insurer', n:'INSURANCE CO', em:'ins',     c:'#7f8c8d', x:38, y:62, hint:'appeals & auth'},
+  {id:'street',  n:'THE STREET',   em:'street',  c:'#2c2c2c', x:10, y:92, hint:'desperate options'}
+];
+
+var LOC_EMOJIS = {
+  home:'house', job:'briefcase', er:'siren', urgent:'bolt', doctor:'stethoscope',
+  spec:'microscope', rx:'pill', hosp:'hospital', ins:'bank', street:'moon'
+};
+
+// Arc steps for Ray
+var ARC_STEPS = [
+  { id:'a1', label:'Get insulin -- fast',                  target:'pharmacy', alts:['street','er'] },
+  { id:'a2', label:'Earn money for a doctor visit',        target:'job',      alts:[] },
+  { id:'a3', label:'Get a diagnosis on paper',             target:'doctor',   alts:[] },
+  { id:'a4', label:'Apply for Medi-Cal',                   target:'insurer',  alts:[] },
+  { id:'a5', label:'Fight the prior auth denial',          target:'insurer',  alts:[] },
+  { id:'a6', label:'Dispute the surprise lab bill',        target:'insurer',  alts:[] },
+  { id:'a7', label:'See the specialist',                   target:'specialist',alts:[] },
+  { id:'a8', label:'Open enrollment decision',             target:'insurer',  alts:[] }
+];
+
+// ============================================================
+// GAME STATE
+// ============================================================
+
+var G = {
+  char:null, day:1, tphase:0, tod:'MORNING',
+  hp:100, en:100, stress:0, cash:0, debt:0, dedMet:0,
+  conds:[], meds:[],
+  criminal:false, crimes:0,
+  rights:[], arcDone:[],
+  pendingRef:false, mediCal:false, turns:0,
+  arcTriggered:{}
+};
+
+// ============================================================
+// UTILITY
+// ============================================================
+
+function $id(id) { return document.getElementById(id); }
+
+function setBar(name, val) {
+  val = Math.max(0, Math.min(100, val));
+  $id('bar-' + name).style.width = val + '%';
+  $id('bar-' + name + '-v').textContent = Math.round(val);
+}
+
+function fmt(n) { return '$' + Math.round(n).toLocaleString(); }
+
+function addLog(msg, type) {
+  type = type || 'dim';
+  var el = document.createElement('div');
+  el.className = 'le ' + type;
+  el.textContent = '[Day ' + G.day + ' ' + G.tod + '] ' + msg;
+  var log = $id('elog');
+  log.insertBefore(el, log.firstChild);
+  if (log.children.length > 60) log.removeChild(log.lastChild);
+}
+
+function notify(msg, type) {
+  type = type || 'info';
+  var el = document.createElement('div');
+  el.className = 'nm ' + type;
+  el.textContent = msg;
+  $id('notif').appendChild(el);
+  setTimeout(function() { el.remove(); }, 3200);
+}
+
+function unlock(text) {
+  if (G.rights.indexOf(text) === -1) {
+    G.rights.push(text);
+    notify('Right unlocked -- see panel', 'good');
+  }
+}
+
+function clamp(v, lo, hi) { return Math.max(lo, Math.min(hi, v)); }
+
+// ============================================================
+// MODAL
+// ============================================================
+
+var _modalCbs = [];
+
+function showModal(hdr, hcls, html, choices) {
+  $id('mhdr').textContent = hdr;
+  $id('mhdr').className = 'mhdr ' + (hcls || 'red');
+  $id('mtxt').innerHTML = html;
+  _modalCbs = [];
+  var chtml = '';
+  for (var i = 0; i < choices.length; i++) {
+    var ch = choices[i];
+    _modalCbs.push(ch.cb);
+    chtml += '<button class="mc" data-idx="' + i + '">';
+    chtml += '<span>' + ch.t + '</span>';
+    chtml += '<span class="mc-h ' + (ch.hc || '') + '">' + ch.h + '</span>';
+    chtml += '</button>';
+  }
+  $id('mchoices').innerHTML = chtml;
+  $id('mcont').style.display = choices.length === 0 ? 'block' : 'none';
+  $id('moverlay').classList.add('on');
+  // Attach click handlers
+  var btns = $id('mchoices').querySelectorAll('.mc');
+  for (var j = 0; j < btns.length; j++) {
+    (function(idx) {
+      btns[idx].addEventListener('click', function() {
+        closeModal();
+        if (_modalCbs[idx]) _modalCbs[idx]();
+        updateUI();
+        checkDeath();
+      });
+    })(j);
+  }
+}
+
+function closeModal() {
+  $id('moverlay').classList.remove('on');
+}
+
+// ============================================================
+// ARC ENGINE
+// ============================================================
+
+function currentArcStep() {
+  for (var i = 0; i < ARC_STEPS.length; i++) {
+    if (G.arcDone.indexOf(ARC_STEPS[i].id) === -1) return ARC_STEPS[i];
+  }
+  return null;
+}
+
+function completeArc(id) {
+  if (G.arcDone.indexOf(id) === -1) G.arcDone.push(id);
+  renderObjectives();
+  var next = currentArcStep();
+  if (!next) {
+    setTimeout(showWin, 600);
+  } else {
+    var locName = '';
+    for (var i = 0; i < LOCS.length; i++) {
+      if (LOCS[i].id === next.target) { locName = LOCS[i].n; break; }
+    }
+    addLog('OBJECTIVE: ' + next.label + ' -- Go to ' + locName, 'warn');
+    notify('Next: ' + next.label, 'warn');
+    highlightTarget(next.target, next.alts);
+  }
+}
+
+function highlightTarget(locId, alts) {
+  var allLocs = document.querySelectorAll('.loc');
+  for (var i = 0; i < allLocs.length; i++) allLocs[i].classList.remove('atgt');
+  var targets = [locId].concat(alts || []);
+  for (var j = 0; j < targets.length; j++) {
+    var el = $id('loc-' + targets[j]);
+    if (el) el.classList.add('atgt');
+  }
+}
+
+function checkArcTrigger(locId) {
+  if (!G.char || !G.char.rayArc) return false;
+  var step = currentArcStep();
+  if (!step) return false;
+  if (G.arcTriggered[step.id]) return false;
+  var isTarget = step.target === locId;
+  var isAlt = step.alts && step.alts.indexOf(locId) !== -1;
+  if (!isTarget && !isAlt) return false;
+  G.arcTriggered[step.id] = true;
+  // Call the right arc function
+  var arcFns = {
+    a1: { pharmacy: arcPharmacy, street: arcStreet, er: arcER1 },
+    a2: { job: arcEarnMoney },
+    a3: { doctor: arcDiagnosis },
+    a4: { insurer: arcMediCal },
+    a5: { insurer: arcPriorAuth },
+    a6: { insurer: arcSurpriseBill },
+    a7: { specialist: arcSpecialist },
+    a8: { insurer: arcOpenEnrollment }
+  };
+  if (arcFns[step.id] && arcFns[step.id][locId]) {
+    arcFns[step.id][locId]();
+    return true;
+  }
+  return false;
+}
+
+// ============================================================
+// RAY ARC EVENTS
+// ============================================================
+
+function arcPharmacy() {
+  showModal('PHARMACY -- NO INSURANCE', 'red',
+    '<strong>Insulin prices without insurance:</strong><br><br>' +
+    'Brand name Humalog (30-day): <span class="d"><strong>' + fmt(287) + '</strong></span><br>' +
+    'Walmart ReliOn generic: <span class="g"><strong>$24.88</strong></span><br>' +
+    'GoodRx price here: <span class="h"><strong>$89.00</strong></span><br><br>' +
+    'You have <strong>' + fmt(G.cash) + '</strong>. Diabetes does not wait.<br><br>' +
+    '<em>Walmart sells ReliOn insulin over the counter in most states. No prescription required. This is real.</em>',
+    [
+      { t:'Buy Walmart ReliOn generic ($25)', h:'$24.88 -- best option', hc:'good', cb:function() {
+        G.cash -= 25;
+        if (G.meds.length > 0) { G.meds[0].filled = true; G.meds[0].days = 28; }
+        manageCond('Diabetes');
+        addLog('Bought Walmart ReliOn insulin. $24.88. Conditions managed.', 'good');
+        unlock('Walmart sells ReliOn insulin OTC for ~$25. No prescription required in most states.');
+        completeArc('a1');
+      }},
+      { t:'Pay full price -- brand Humalog ($287)', h:'-$287', hc:'bad', cb:function() {
+        var pay = Math.min(287, G.cash);
+        G.cash -= pay;
+        if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+        if (G.meds.length > 0) { G.meds[0].filled = true; G.meds[0].days = 30; }
+        manageCond('Diabetes');
+        addLog('Paid $287 for brand insulin. Conditions managed.', 'warn');
+        completeArc('a1');
+      }},
+      { t:"Can't afford it -- try the street", h:'high risk', hc:'bad', cb:function() {
+        travelTo('street');
+      }}
+    ]
+  );
+}
+
+function arcStreet() {
+  showModal('STREET INSULIN -- HIGH RISK', 'red',
+    'A contact has leftover insulin. $40. Not refrigerated. Unknown type and concentration.<br><br>' +
+    '<span class="d">Wrong insulin concentration can cause hypoglycemic shock. 30% chance of bad batch.</span><br><br>' +
+    'Alternatively: hospital ERs are legally required to stabilize you regardless of insurance (EMTALA), but the bill follows.',
+    [
+      { t:'Buy street insulin ($40)', h:'30% contamination risk', hc:'bad', cb:function() {
+        if (Math.random() < 0.3) {
+          G.hp -= 35; G.stress += 25;
+          addLog('BAD INSULIN -- hypoglycemic reaction. Health -35.', 'danger');
+          showModal('MEDICAL EMERGENCY', 'red',
+            'You go into shock. Neighbor calls 911. You survive -- but now you are in the ER with a $3,200 ambulance bill on top of everything else.',
+            [{ t:'Continue', h:'', hc:'', cb:function() { G.debt += 3200; completeArc('a1'); }}]
+          );
+        } else {
+          G.cash -= 40;
+          if (G.meds.length > 0) { G.meds[0].filled = true; G.meds[0].days = 20; }
+          manageCond('Diabetes');
+          addLog('Street insulin worked this time. -$40. Health stable.', 'warn');
+          completeArc('a1');
+        }
+      }},
+      { t:'Go to the ER instead', h:'will be billed', hc:'warn', cb:function() {
+        travelTo('er');
+      }}
+    ]
+  );
+}
+
+function arcER1() {
+  var bill = 2400 + Math.floor(Math.random() * 1200);
+  G.debt += bill;
+  G.hp += 12;
+  if (G.meds.length > 0) { G.meds[0].filled = true; G.meds[0].days = 14; }
+  manageCond('Diabetes');
+  showModal('ER -- DIABETIC STABILIZATION', 'red',
+    'EMTALA requires stabilization regardless of insurance.<br>' +
+    'They give you insulin and monitor your blood sugar for 4 hours.<br><br>' +
+    'Before discharge the billing department visits your bed.<br>' +
+    'Bill: <span class="d"><strong>' + fmt(bill) + '</strong></span> -- uninsured, full chargemaster rates.<br><br>' +
+    'They offer a payment plan. They do NOT mention charity care programs,<br>' +
+    'even though nonprofit hospital status requires them to offer financial assistance.',
+    [
+      { t:'Ask about charity care / financial assistance', h:'may eliminate bill', hc:'good', cb:function() {
+        G.debt = Math.max(0, G.debt - bill + 150);
+        addLog('Charity care applied. ER bill reduced to $150.', 'good');
+        unlock('Nonprofit hospitals must offer charity care. Always ask -- they will not volunteer this information.');
+        completeArc('a1');
+      }},
+      { t:'Accept the payment plan (24 months)', h:fmt(Math.floor(bill/24)) + '/mo', hc:'warn', cb:function() {
+        addLog('Payment plan accepted. ' + fmt(Math.floor(bill/24)) + '/month for 24 months.', 'warn');
+        completeArc('a1');
+      }}
+    ]
+  );
+}
+
+function arcEarnMoney() {
+  showModal('WORK/GIG -- THE GRIND', 'yellow',
+    'You pick up day labor -- hauling, yard work, dish washing. Your body is not happy.<br>' +
+    'Uncontrolled diabetes makes physical labor exhausting and dangerous.<br><br>' +
+    'You need at least <strong>$180</strong> for a clinic visit.<br>' +
+    'Current cash: <strong>' + fmt(G.cash) + '</strong>',
+    [
+      { t:'Work 2 days -- earn $180', h:'+$180, health -8, energy -30', hc:'warn', cb:function() {
+        G.cash += 180; G.hp -= 8; G.en = Math.max(0, G.en - 30); G.stress += 15;
+        addLog('2 days gig work. +$180. Body hurting. Health -8.', 'warn');
+        completeArc('a2');
+      }},
+      { t:'Work 3 days -- earn $270 (buffer)', h:'+$270, health -14', hc:'bad', cb:function() {
+        G.cash += 270; G.hp -= 14; G.en = Math.max(0, G.en - 45); G.stress += 22;
+        addLog('3 days gig work. +$270. Exhausted. Health -14.', 'warn');
+        completeArc('a2');
+      }}
+    ]
+  );
+}
+
+function arcDiagnosis() {
+  if (G.cash < 140) {
+    showModal('NOT ENOUGH CASH', 'red',
+      'The community clinic charges $140 on a sliding scale. You have <strong>' + fmt(G.cash) + '</strong>.<br><br>Go earn more money first.',
+      [{ t:'Go earn more first', h:'', hc:'', cb:function() { G.arcTriggered['a3'] = false; travelTo('job'); }}]
+    );
+    return;
+  }
+  G.cash -= 140;
+  showModal('COMMUNITY HEALTH CLINIC', 'blue',
+    'Sliding scale: $140. The doctor reviews your history, checks your A1C.<br>' +
+    'Confirms: Type 2 Diabetes. Notes developing peripheral neuropathy in your feet --<br>' +
+    '<span class="d">a sign of prolonged uncontrolled blood sugar.</span><br><br>' +
+    'She provides a printed <strong>Letter of Medical Necessity</strong>.<br>' +
+    'You will need this for: Medi-Cal application, prior auth requests, and any insurance appeal.<br><br>' +
+    '<span class="h">"Keep copies of everything. The system will lose them."</span>',
+    [{ t:'Get the letter and documentation', h:'-$140, critical for next steps', hc:'good', cb:function() {
+      G.hp += 5;
+      addLog('Diagnosis documented. Letter of Medical Necessity obtained. -$140.', 'good');
+      unlock('A Letter of Medical Necessity is required for most insurance appeals and prior auth requests. Keep copies.');
+      completeArc('a3');
+    }}]
+  );
+}
+
+function arcMediCal() {
+  showModal('MEDI-CAL ENROLLMENT', 'yellow',
+    'California Medi-Cal covers people below 138% of the federal poverty line.<br>' +
+    'At $180/week you qualify -- if you navigate the paperwork.<br><br>' +
+    'The caseworker mentions a recent policy change:<br>' +
+    '<span class="g">Same-day emergency Medi-Cal</span> is available for diabetes with a doctor\'s letter. You have one.',
+    [
+      { t:'Apply for emergency Medi-Cal with doctor letter', h:'activates same day', hc:'good', cb:function() {
+        G.mediCal = true;
+        G.char.plan = { name:'Medi-Cal (Emergency)', ded:0, coin:0, erCopay:0, oop:0, net:'Medi-Cal', premium:0 };
+        addLog('MEDI-CAL APPROVED -- Emergency enrollment. Coverage active.', 'good');
+        unlock('California Medi-Cal can activate same-day for documented medical emergencies. The enrollment worker will not tell you this unless you ask.');
+        G.hp += 8; G.stress -= 20;
+        updateInsCard();
+        completeArc('a4');
+      }},
+      { t:'Standard application (3-week wait)', h:'no coverage gap', hc:'bad', cb:function() {
+        G.stress += 20; G.hp -= 10;
+        addLog('Standard Medi-Cal: 3-week wait. No coverage during gap. Health -10.', 'danger');
+        completeArc('a4');
+      }}
+    ]
+  );
+}
+
+function arcPriorAuth() {
+  showModal('PRIOR AUTHORIZATION DENIED', 'red',
+    'Your Medi-Cal prescription for Metformin was denied.<br>' +
+    'Reason: <span class="d">"Step therapy requirements not met. Must first try and fail Drug A."</span><br><br>' +
+    'Your doctor already noted sulfonylureas are contraindicated for your kidney function.<br>' +
+    'The insurer either did not read it or does not care.<br><br>' +
+    '<span class="h">40% of denied prior auth claims that are appealed get overturned. Most people accept the denial.</span>',
+    [
+      { t:'Accept -- try the step therapy drug', h:'health risk, 30 days', hc:'bad', cb:function() {
+        G.hp -= 12; G.stress += 15;
+        addLog('Step therapy started. Wrong drug for kidney levels. Health -12.', 'danger');
+        completeArc('a5');
+      }},
+      { t:"Appeal with doctor's contraindication note", h:'10 days -- likely approved', hc:'good', cb:function() {
+        G.stress += 10;
+        addLog('Prior auth appeal filed with contraindication documentation.', 'info');
+        unlock('File appeals with clinical notes attached. Physician-documented contraindications must be reviewed. 40% of appeals succeed.');
+        setTimeout(function() {
+          notify('APPEAL APPROVED -- Metformin authorized', 'good');
+          addLog('Prior auth appeal successful. Correct medication approved.', 'good');
+        }, 800);
+        completeArc('a5');
+      }},
+      { t:'Pay out of pocket this month ($23 generic)', h:'-$23', hc:'warn', cb:function() {
+        G.cash -= 23;
+        if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+        addLog('Paid $23 out of pocket for Metformin generic.', 'warn');
+        unlock('GoodRx and Cost Plus Drugs often sell generics cheaper than insurance copays.');
+        completeArc('a5');
+      }}
+    ]
+  );
+}
+
+function arcSurpriseBill() {
+  showModal('$1,247 SURPRISE BILL', 'red',
+    'A bill arrives from Valley Pathology Group LLC. You do not know who that is.<br><br>' +
+    'This is the lab that processed your bloodwork. The clinic: in-network on Medi-Cal.<br>' +
+    'The lab that processed your samples: <span class="d">out of network.</span><br><br>' +
+    '<strong>$1,247.00 -- Out of network lab processing.</strong><br><br>' +
+    'Under the No Surprises Act (2022), labs at in-network facilities cannot bill you<br>' +
+    'more than your in-network rate. For Medi-Cal patients: <span class="g">$0.</span><br><br>' +
+    'They are counting on you not knowing this.',
+    [
+      { t:'Pay the bill', h:'-$1,247 (legally avoidable)', hc:'bad', cb:function() {
+        var pay = Math.min(1247, G.cash);
+        G.cash -= pay;
+        if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+        addLog('Paid $1,247 surprise bill. This was legally avoidable.', 'danger');
+        completeArc('a6');
+      }},
+      { t:'Invoke No Surprises Act -- dispute letter', h:'reduces bill to $0', hc:'good', cb:function() {
+        G.stress += 8;
+        addLog('No Surprises Act invoked. Bill disputed. Result: $0 owed.', 'good');
+        unlock('No Surprises Act (2022): out-of-network billing at in-network facilities is banned. For Medi-Cal patients the bill is $0. Send a written dispute citing the law.');
+        completeArc('a6');
+      }},
+      { t:'Call Medi-Cal member services', h:'40-min hold, then resolved', hc:'warn', cb:function() {
+        G.stress += 18;
+        addLog('40-minute hold. Medi-Cal confirmed: bill invalid. $0 owed.', 'warn');
+        unlock('Medi-Cal member services can intervene on surprise billing. Call the number on your card. Document everything in writing.');
+        completeArc('a6');
+      }}
+    ]
+  );
+}
+
+function arcSpecialist() {
+  showModal('ENDOCRINOLOGIST -- FIRST REAL VISIT', 'green',
+    'Dr. Reyes reviews your complete history. She has seen this before.<br><br>' +
+    'Your A1C: <span class="d">11.2%</span> -- dangerously high. Normal is under 7.<br>' +
+    'Peripheral neuropathy: early stage in both feet.<br><br>' +
+    'She prescribes comprehensive medications and orders a CGM (continuous glucose monitor).<br>' +
+    '<span class="g">CGMs are covered at 100% under Medi-Cal for diabetics.</span><br><br>' +
+    '"You should have been here 8 months ago. The system failed you, not the other way around."',
+    [{ t:'Accept full treatment plan', h:'health +25, conditions managed', hc:'good', cb:function() {
+      G.hp += 25; G.stress -= 20; G.en += 15;
+      for (var i = 0; i < G.conds.length; i++) G.conds[i].ok = true;
+      if (G.meds.length > 0) { G.meds[0].filled = true; G.meds[0].days = 90; }
+      addLog('Full treatment plan accepted. Diabetes managed. Health +25.', 'good');
+      unlock('Continuous glucose monitors (CGMs) are covered at 100% under Medi-Cal for Type 2 diabetics. Most patients are never told.');
+      completeArc('a7');
+    }}]
+  );
+}
+
+function arcOpenEnrollment() {
+  showModal('OPEN ENROLLMENT DECISION', 'yellow',
+    'You got a part-time job -- 22 hours/week at $14/hour.<br>' +
+    'Gross income: ~$1,200/month. This puts you above the Medi-Cal limit<br>' +
+    'but within the Covered California subsidy range.<br><br>' +
+    '<span class="g">Covered California:</span> At your income, premium would be <strong>$0-12/month</strong> with subsidies.<br>' +
+    'Deductible: $750. Better specialist access than Medi-Cal.<br><br>' +
+    '<span class="d">Do nothing:</span> Coverage lapses in 30 days without action.',
+    [
+      { t:'Apply for Covered California (subsidized marketplace)', h:'$0-12/mo, best long-term', hc:'good', cb:function() {
+        G.char.plan = { name:'Covered CA Silver -- $0/mo', ded:750, coin:15, erCopay:30, oop:3000, net:'PPO', premium:0 };
+        updateInsCard();
+        addLog('Covered California enrollment complete. $0 premium Silver plan.', 'good');
+        unlock('At low incomes ACA marketplace plans can cost $0/month with subsidies. Use CoveredCA.com -- most people do not know they qualify.');
+        G.stress -= 15;
+        completeArc('a8');
+      }},
+      { t:'Stay on Medi-Cal and report income properly', h:'correct process', hc:'warn', cb:function() {
+        addLog('Medi-Cal income reported. Transition to Covered CA initiated.', 'good');
+        completeArc('a8');
+      }},
+      { t:'Do nothing -- hope coverage continues', h:'lapse incoming', hc:'bad', cb:function() {
+        G.stress += 25; G.hp -= 10;
+        addLog('Coverage lapse. Cycle may restart.', 'danger');
+        completeArc('a8');
+      }}
+    ]
+  );
+}
+
+// ============================================================
+// SANDBOX ACTION FUNCTIONS
+// ============================================================
+
+function manageCond(name) {
+  for (var i = 0; i < G.conds.length; i++) {
+    if (G.conds[i].n.indexOf(name) !== -1) G.conds[i].ok = true;
+  }
+}
+
+function applyDed(charge) {
+  var plan = G.char.plan;
+  if (plan.net === 'NONE') {
+    G.cash -= charge;
+    if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+    return charge;
+  }
+  var rem = plan.ded - G.dedMet;
+  var share = 0;
+  if (rem > 0) {
+    var applied = Math.min(charge, rem);
+    G.dedMet += applied;
+    share += applied;
+    charge -= applied;
+  }
+  if (charge > 0) share += charge * (plan.coin / 100);
+  share = Math.floor(share);
+  G.cash -= share;
+  if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+  return share;
+}
+
+function advTime() {
+  G.turns++;
+  G.tphase = (G.tphase + 1) % 4;
+  G.tod = TIMES[G.tphase];
+  $id('tod').textContent = G.tod;
+  if (G.tphase === 0) { G.day++; $id('daynum').textContent = G.day; dailyTick(); }
+}
+
+function dailyTick() {
+  for (var i = 0; i < G.conds.length; i++) {
+    var c = G.conds[i];
+    if (!c.ok) { var d = c.drain * c.sev; G.hp -= d; addLog(c.n + ' unmanaged -- HP -' + d.toFixed(1), 'danger'); }
+  }
+  for (var j = 0; j < G.meds.length; j++) {
+    var m = G.meds[j];
+    if (!m.filled || m.days <= 0) { G.hp -= 2; G.stress += 4; addLog(m.n + ' not taken -- HP -2', 'danger'); }
+    else { m.days--; }
+  }
+  if (G.stress > 75) { G.hp -= 4; addLog('Extreme stress -- HP -4', 'danger'); }
+  updateUI();
+  checkDeath();
+}
+
+function doRest() { G.en = Math.min(100, G.en + 20); G.stress = Math.max(0, G.stress - 10); addLog('Rested. Energy +20. Stress -10.', 'good'); advTime(); updateUI(); }
+function doTakeMeds() {
+  var took = 0;
+  for (var i = 0; i < G.meds.length; i++) {
+    if (G.meds[i].filled && G.meds[i].days > 0) { G.meds[i].days--; took++; }
+  }
+  if (took) { for (var j = 0; j < G.conds.length; j++) G.conds[j].ok = true; addLog('Medications taken. Conditions managed.', 'good'); }
+  else addLog('No filled medications available.', 'warn');
+  advTime(); updateUI();
+}
+function doSkipMeds() {
+  for (var i = 0; i < G.meds.length; i++) G.meds[i].filled = false;
+  for (var j = 0; j < G.conds.length; j++) G.conds[j].ok = false;
+  G.hp -= 10;
+  addLog('Meds skipped. Conditions unmanaged. HP -10.', 'danger');
+  advTime(); updateUI(); checkDeath();
+}
+function doBillReview() {
+  var saving = Math.floor(G.debt * 0.12 + Math.random() * 150);
+  G.debt = Math.max(0, G.debt - saving);
+  addLog('Bill review found ' + fmt(saving) + ' in errors. Debt reduced.', 'good');
+  unlock('80% of medical bills contain errors. Always request an itemized bill before paying.');
+}
+function doWork(pay, ec, sc) {
+  if (G.en < 15) { pay = Math.floor(pay * 0.4); addLog('Too exhausted -- only earned ' + fmt(pay) + '.', 'warn'); }
+  else addLog('Worked. +' + fmt(pay) + '. Energy -' + ec + '.', 'good');
+  G.cash += pay; G.en = Math.max(0, G.en - ec); G.stress += sc;
+  advTime(); updateUI();
+}
+function doDouble() {
+  if (G.en < 25) { G.hp -= 12; G.stress += 20; G.cash += 180; addLog('Worked while sick. HP -12. +$180.', 'danger'); }
+  else { G.cash += 210; G.en = Math.max(0, G.en - 55); G.stress += 30; addLog('Double shift. +$210. Exhausted.', 'warn'); }
+  advTime(); updateUI(); checkDeath();
+}
+function doER() {
+  var bill = 5200 + Math.floor(Math.random() * 6000);
+  var plan = G.char.plan;
+  var paid = plan.net === 'NONE' ? bill : plan.erCopay + Math.min(bill * 0.35, plan.ded - G.dedMet);
+  paid = Math.floor(paid);
+  G.cash -= paid; if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+  G.hp += 15; G.stress += 25;
+  addLog('ER visit. Billed ' + fmt(bill) + '. Your share ~' + fmt(paid) + '.', 'warn');
+  advTime(); updateUI();
+}
+function doUrgent() {
+  var plan = G.char.plan;
+  var cop = plan.net === 'NONE' ? 280 : Math.floor(plan.erCopay * 0.5);
+  G.cash -= cop; if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+  G.hp += 10; G.stress += 8;
+  addLog('Urgent care. Copay ' + fmt(cop) + '. HP +10.', 'warn');
+  advTime(); updateUI();
+}
+function doNetCheck() {
+  var plan = G.char.plan;
+  var msg = plan.net === 'NONE' ? 'No insurance -- everything is full price.' :
+    plan.net === 'HMO' ? 'HMO: In-network only. Out-of-network = 0% covered.' :
+    'PPO: In-network preferred. Out-of-network at reduced rate.';
+  notify(msg, 'info');
+  unlock('Always verify network status for every provider -- including labs and anesthesiologists.');
+}
+function doPCP() {
+  var plan = G.char.plan;
+  var cop = plan.net === 'NONE' ? 180 : 30;
+  G.cash -= cop; if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+  G.hp += 5; G.stress -= 5;
+  addLog('PCP visit. Copay ' + fmt(cop) + '. HP +5.', 'good');
+  advTime(); updateUI();
+}
+function doReferral() {
+  var plan = G.char.plan;
+  if (plan.net !== 'HMO') { notify('PPO: no referral needed -- go direct.', 'good'); unlock('PPO: self-refer to any specialist. HMO: PCP referral required first.'); return; }
+  G.pendingRef = true; addLog('Referral requested. 3 business days.', 'info'); advTime(); updateUI();
+}
+function doAnnual() {
+  G.hp = Math.min(100, G.hp + 8); G.stress -= 5;
+  addLog('Annual wellness exam. FREE under ACA. HP +8.', 'good');
+  unlock('Annual wellness exams and most preventive screenings are FREE under the ACA -- no deductible applies.');
+  advTime(); updateUI();
+}
+function doSpecSandbox() {
+  var plan = G.char.plan;
+  if (plan.net === 'HMO' && !G.pendingRef) { notify('HMO requires PCP referral first.', 'danger'); return; }
+  var cop = plan.net === 'NONE' ? 450 : 75;
+  G.cash -= cop; if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+  G.hp += 12;
+  for (var i = 0; i < G.conds.length; i++) G.conds[i].ok = true;
+  addLog('Specialist visit. Copay ' + fmt(cop) + '. Conditions addressed.', 'good');
+  advTime(); updateUI();
+}
+function doFillRxGen() {
+  if (!G.meds.length) { notify('No prescriptions', 'info'); return; }
+  var m = G.meds[0];
+  var rxcost = Math.floor(m.cost * 0.09);
+  G.cash -= rxcost; if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+  m.filled = true; m.days = 30;
+  for (var i = 0; i < G.conds.length; i++) G.conds[i].ok = true;
+  addLog('Filled ' + m.n + ' (generic). ' + fmt(rxcost) + '.', 'good');
+  unlock('Generic drugs are FDA-approved bioequivalents -- same drug, 80-90% cheaper. Always ask.');
+  advTime(); updateUI();
+}
+function doFillRxBrand() {
+  if (!G.meds.length) { notify('No prescriptions', 'info'); return; }
+  var m = G.meds[0];
+  G.cash -= m.cost; if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+  m.filled = true; m.days = 30;
+  for (var i = 0; i < G.conds.length; i++) G.conds[i].ok = true;
+  addLog('Filled ' + m.n + ' (brand). ' + fmt(m.cost) + '.', 'warn');
+  advTime(); updateUI();
+}
+function doSkipRx() {
+  for (var i = 0; i < G.meds.length; i++) { G.meds[i].filled = false; G.meds[i].days = 0; }
+  for (var j = 0; j < G.conds.length; j++) G.conds[j].ok = false;
+  G.hp -= 15;
+  addLog('Skipped prescriptions. Conditions unmanaged. HP -15.', 'danger');
+  advTime(); updateUI(); checkDeath();
+}
+function doAdmit() {
+  var bill = 12000 + Math.floor(Math.random() * 8000);
+  var share = applyDed(bill);
+  G.hp += 20;
+  addLog('Hospital admission. Billed ' + fmt(bill) + '. Your share: ' + fmt(share) + '.', 'warn');
+  advTime(); updateUI();
+}
+function doItemized() {
+  var saving = Math.floor(G.debt * 0.15 + Math.random() * 200);
+  G.debt = Math.max(0, G.debt - saving);
+  addLog('Itemized bill: ' + fmt(saving) + ' in errors found. Debt reduced.', 'good');
+  unlock('80% of medical bills contain errors. Request itemized bills. Common: duplicate charges, items not received.');
+}
+function doAppeal() {
+  G.stress += 12;
+  addLog('Formal appeal filed. 30 days.', 'info');
+  var self = this;
+  setTimeout(function() {
+    if (Math.random() < 0.4) { var r = Math.min(G.debt, 1500); G.debt -= r; addLog('APPEAL OVERTURNED. Debt -' + fmt(r) + '.', 'good'); updateUI(); }
+    else addLog('Appeal denied. Escalate to state commissioner.', 'danger');
+  }, 600);
+  unlock('40% of insurance denials appealed in writing are overturned. Most patients never appeal.');
+}
+function doAuth() {
+  G.stress += 10;
+  addLog('Prior authorization requested. 7 business days. Do not receive care until approved.', 'warn');
+  unlock('Prior authorization must be obtained BEFORE non-emergency treatment. Care without it = denied claim.');
+}
+function doMemberSvc() {
+  G.stress += 16; G.en = Math.max(0, G.en - 10);
+  addLog('On hold 47 minutes. "Your call is important to us."', 'danger');
+  showModal('47-MINUTE HOLD', 'red',
+    'After 47 minutes and two transfers, a representative tells you to call a different number.<br>' +
+    'That number has a 35-minute wait.<br><br>' +
+    'This is not an accident. Administrative friction is designed to make you give up.',
+    [{ t:'File written complaint instead', h:'creates paper trail', hc:'good', cb:function() {
+      addLog('Written complaint submitted. Paper trail established.', 'good');
+      unlock('Written complaints create legal paper trails. Phone calls do not. Always follow up calls in writing.');
+    }}]
+  );
+}
+function doStateComp() {
+  showModal('STATE INSURANCE COMMISSIONER', 'green',
+    'California DMHC: 1-888-466-2219<br>California DOI: insurance.ca.gov<br><br>' +
+    'Filing triggers a formal investigation. Insurers must respond within 30 days.<br>' +
+    'Regulators have enforcement power over license renewals.<br><br>' +
+    'This is free. It works.',
+    [{ t:'File the complaint', h:'free, effective', hc:'good', cb:function() {
+      G.stress -= 8;
+      if (Math.random() < 0.6) { var r = Math.min(G.debt, 1200); G.debt -= r; addLog('State complaint resolved. Debt -' + fmt(r) + '.', 'good'); }
+      else addLog('Complaint filed. Investigation opened.', 'info');
+      unlock('DMHC and CDI regulate California health insurance. Complaints affect insurer license renewals.');
+      updateUI();
+    }}]
+  );
+}
+function doSellMeds() {
+  if (!G.meds.length) { notify('No meds to sell', 'info'); return; }
+  G.cash += 150; G.meds[0].filled = false; G.meds[0].days = 0;
+  for (var i = 0; i < G.conds.length; i++) G.conds[i].ok = false;
+  G.criminal = true; G.crimes++;
+  G.hp -= 12;
+  addLog('Sold meds. +$150. Criminal record. HP -12.', 'danger');
+  if (G.crimes >= 2) {
+    showModal('ARRESTED', 'red',
+      'Caught selling prescription medications. Felony. 3 nights in jail.<br>' +
+      'No medications during incarceration. Condition deteriorates severely.<br>' +
+      'Criminal record affects jobs, housing, and some insurance eligibility.',
+      [{ t:'Accept consequences', h:'', hc:'bad', cb:function() { G.hp -= 22; G.stress += 35; G.cash = Math.max(0, G.cash - 400); checkDeath(); updateUI(); }}]
+    );
+  }
+  advTime(); updateUI();
+}
+function doPayday() {
+  G.cash += 500; G.debt += 680; G.stress += 18;
+  addLog('Payday loan: +$500, +$680 debt (400% APR).', 'danger');
+  unlock('California caps some payday loans at 36% APR. Many online lenders evade this via loopholes. Check the lender license at dbo.ca.gov.');
+  advTime(); updateUI();
+}
+function doBuyStreet() {
+  if (Math.random() < 0.3) {
+    G.hp -= 28; G.stress += 22;
+    addLog('Contaminated medication -- severe reaction. HP -28.', 'danger');
+    checkDeath();
+  } else {
+    G.cash -= 40; if (G.cash < 0) { G.debt += Math.abs(G.cash); G.cash = 0; }
+    for (var i = 0; i < G.conds.length; i++) G.conds[i].ok = true;
+    addLog('Street medication worked this time. Conditions managed.', 'warn');
+  }
+  advTime(); updateUI();
+}
+function doPanhandle() {
+  var earned = 20 + Math.floor(Math.random() * 40);
+  G.cash += earned; G.stress += 18; G.en = Math.max(0, G.en - 8);
+  addLog('Panhandled. +' + fmt(earned) + '. Stress +18.', 'dim');
+  advTime(); updateUI();
+}
+
+// Location action configs
+var LOC_ACTIONS = {
+  home: [
+    {l:'Rest / Sleep', c:'+energy +20', cls:'ga', fn:doRest},
+    {l:'Take Medications', c:'if filled', cls:'ga', fn:doTakeMeds},
+    {l:'Skip Meds (save money)', c:'RISK', cls:'da', fn:doSkipMeds},
+    {l:'Review Bills / Dispute Errors', c:'saves money', cls:'ga', fn:doBillReview}
+  ],
+  job: [
+    {l:'Work 4-hour gig shift', c:'+$65', cls:'ga', fn:function(){doWork(65,20,10);}},
+    {l:'Work full day', c:'+$140', cls:'ga', fn:function(){doWork(140,40,20);}},
+    {l:'Work double shift', c:'+$210 / health risk', cls:'da', fn:doDouble}
+  ],
+  er: [
+    {l:'Go to Emergency Room', c:'copay + deductible', cls:'da', fn:doER}
+  ],
+  urgent: [
+    {l:'Urgent Care Visit', c:'lower copay than ER', cls:'', fn:doUrgent},
+    {l:'Check In-Network Status First', c:'free', cls:'ga', fn:doNetCheck}
+  ],
+  doctor: [
+    {l:'PCP Office Visit', c:'$30-180', cls:'', fn:doPCP},
+    {l:'Request Specialist Referral', c:'HMO requires this', cls:'ga', fn:doReferral},
+    {l:'Annual Wellness Exam', c:'FREE under ACA', cls:'ga', fn:doAnnual}
+  ],
+  specialist: [
+    {l:'Specialist Consultation', c:'requires referral on HMO', cls:'', fn:doSpecSandbox}
+  ],
+  pharmacy: [
+    {l:'Fill Prescription (brand name)', c:'$80-350/mo', cls:'da', fn:doFillRxBrand},
+    {l:'Request Generic Version', c:'$8-40/mo -- same drug', cls:'ga', fn:doFillRxGen},
+    {l:'Skip Prescription', c:'CONDITIONS WORSEN', cls:'da', fn:doSkipRx}
+  ],
+  hospital: [
+    {l:'Agree to Admission', c:'deductible applies', cls:'', fn:doAdmit},
+    {l:'Request Itemized Bill', c:'free -- find errors', cls:'ga', fn:doItemized},
+    {l:'Appeal Coverage Denial', c:'10-14 days', cls:'ga', fn:doAppeal}
+  ],
+  insurer: [
+    {l:'File Insurance Appeal', c:'free -- 40% win rate', cls:'ga', fn:doAppeal},
+    {l:'Request Prior Authorization', c:'required before care', cls:'', fn:doAuth},
+    {l:'Call Member Services', c:'47 min hold', cls:'da', fn:doMemberSvc},
+    {l:'File State DOI Complaint', c:'free -- works', cls:'ga', fn:doStateComp}
+  ],
+  street: [
+    {l:'Sell Prescription Meds', c:'illegal -- $150', cls:'da', fn:doSellMeds},
+    {l:'Payday Loan (400% APR)', c:'+$500 then $680 debt', cls:'da', fn:doPayday},
+    {l:'Buy Unverified Medication', c:'$40 -- 30% danger', cls:'da', fn:doBuyStreet},
+    {l:'Panhandle', c:'+$20-60', cls:'da', fn:doPanhandle}
+  ]
+};
+
+// ============================================================
+// MAP
+// ============================================================
+
+var LOC_ICONS_EMOJI = {
+  home:'HM', job:'WK', er:'ER', urgent:'UC',
+  doctor:'DR', specialist:'SP', pharmacy:'RX',
+  hospital:'HX', insurer:'IN', street:'ST'
+};
+
+function renderMap() {
+  var layer = $id('loclayer');
+  var html = '';
+  for (var i = 0; i < LOCS.length; i++) {
+    var loc = LOCS[i];
+    html += '<div class="loc" id="loc-' + loc.id + '" style="--lc:' + loc.c + ';left:' + loc.x + '%;top:' + loc.y + '%;" data-locid="' + loc.id + '">';
+    html += '<div class="lic" style="box-shadow:0 0 0 var(--lc);">' + (LOC_ICONS_EMOJI[loc.id] || '?') + '</div>';
+    html += '<div class="lnm">' + loc.n + '</div>';
+    html += '<div class="lhint">' + loc.hint + '</div>';
+    html += '</div>';
+  }
+  layer.innerHTML = html;
+  // Attach click handlers
+  var locEls = layer.querySelectorAll('.loc');
+  for (var j = 0; j < locEls.length; j++) {
+    (function(el) {
+      el.addEventListener('click', function() {
+        travelTo(el.getAttribute('data-locid'));
+      });
+    })(locEls[j]);
+  }
+}
+
+function travelTo(locId) {
+  var loc = null;
+  for (var i = 0; i < LOCS.length; i++) { if (LOCS[i].id === locId) { loc = LOCS[i]; break; } }
+  if (!loc) return;
+  G.currentLoc = locId;
+  G.en = Math.max(0, G.en - 4);
+  var dot = $id('pdot');
+  dot.style.left = loc.x + '%';
+  dot.style.top = loc.y + '%';
+  $id('ap-title').textContent = loc.n;
+  // Arc trigger
+  checkArcTrigger(locId);
+  // Show sandbox actions
+  var actions = LOC_ACTIONS[locId] || [];
+  var ahtml = '';
+  for (var j = 0; j < actions.length; j++) {
+    var a = actions[j];
+    ahtml += '<button class="abtn ' + (a.cls || '') + '" data-aidx="' + j + '" data-aloc="' + locId + '">';
+    ahtml += '<span>' + a.l + '</span>';
+    var acCls = a.cls === 'ga' ? 'good' : a.cls === 'da' ? 'bad' : 'warn';
+    ahtml += '<span class="ac ' + acCls + '">' + a.c + '</span>';
+    ahtml += '</button>';
+  }
+  $id('actions').innerHTML = ahtml;
+  var abtns = $id('actions').querySelectorAll('.abtn');
+  for (var k = 0; k < abtns.length; k++) {
+    (function(btn, idx) {
+      btn.addEventListener('click', function() {
+        var acts = LOC_ACTIONS[locId] || [];
+        if (acts[idx] && acts[idx].fn) { acts[idx].fn(); }
+      });
+    })(abtns[k], parseInt(abtns[k].getAttribute('data-aidx')));
+  }
+  addLog('Traveled to ' + loc.n + '.', 'dim');
+  updateUI();
+}
+
+// ============================================================
+// UI UPDATE
+// ============================================================
+
+function updateUI() {
+  G.hp = clamp(G.hp, 0, 100);
+  G.en = clamp(G.en, 0, 100);
+  G.stress = clamp(G.stress, 0, 100);
+  $id('sv-hp').textContent = Math.round(G.hp);
+  $id('sv-en').textContent = Math.round(G.en);
+  $id('sv-st').textContent = Math.round(G.stress);
+  $id('sv-ca').textContent = fmt(G.cash);
+  $id('sv-de').textContent = fmt(G.debt);
+  setBar('hp', G.hp); setBar('en', G.en); setBar('st', G.stress);
+  var cb = $id('cashbig');
+  cb.textContent = fmt(G.cash);
+  cb.className = 'mny' + (G.cash < 100 ? ' broke' : '');
+  $id('debtval').textContent = fmt(G.debt);
+  updateInsCard();
+  // Conditions
+  var cl = $id('condlist');
+  if (G.conds.length === 0) { cl.innerHTML = '<span style="color:var(--dim)">None</span>'; }
+  else {
+    var ch = '';
+    for (var i = 0; i < G.conds.length; i++) {
+      var c = G.conds[i];
+      var cls = c.ok ? 'ct-ok' : c.sev > 2 ? 'ct-bad' : 'ct-warn';
+      ch += '<span class="ctag ' + cls + '">' + c.n + ' ' + (c.ok ? '[OK]' : '[!]') + '</span>';
+    }
+    cl.innerHTML = ch;
+  }
+  // Meds
+  var ml = $id('medlist');
+  if (G.meds.length === 0) { ml.innerHTML = '<span style="color:var(--dim)">None</span>'; }
+  else {
+    var mh = '';
+    for (var j = 0; j < G.meds.length; j++) {
+      var m = G.meds[j];
+      var ok = m.filled && m.days > 0;
+      mh += '<div style="padding:2px 0;border-bottom:1px solid var(--bdr);font-size:11px;">';
+      mh += '<span style="color:' + (ok ? 'var(--green)' : 'var(--blood)') + '">' + (ok ? '[OK]' : '[!!]') + '</span> ';
+      mh += m.n + ' <span style="color:var(--dim);font-size:10px;">' + m.days + 'd left</span>';
+      mh += '</div>';
+    }
+    ml.innerHTML = mh;
+  }
+  // Claims
+  $id('claimsp').innerHTML = G.debt > 0 ?
+    '<div style="color:var(--blood);font-family:Share Tech Mono,monospace;">Outstanding: ' + fmt(G.debt) + '</div>' :
+    '<span style="color:var(--dim)">None</span>';
+  // Rights
+  var rp = $id('rightsp');
+  if (G.rights.length > 0) {
+    var rh = '';
+    var show = G.rights.slice(-3);
+    for (var r = 0; r < show.length; r++) {
+      rh += '<div style="margin-bottom:5px;padding-bottom:5px;border-bottom:1px solid var(--bdr);color:#3a6a3a;">> ' + show[r] + '</div>';
+    }
+    rp.innerHTML = rh;
+  }
+  renderObjectives();
+}
+
+function updateInsCard() {
+  if (!G.char) return;
+  var p = G.char.plan;
+  $id('ins-pn').textContent = p.name;
+  $id('ins-ded').textContent = p.ded === 0 ? 'N/A' : fmt(p.ded);
+  $id('ins-met').textContent = fmt(G.dedMet);
+  $id('ins-coin').textContent = p.coin + '%';
+  $id('ins-er').textContent = p.erCopay === 0 && p.net === 'NONE' ? 'FULL PRICE' : fmt(p.erCopay);
+  $id('ins-oop').textContent = p.oop === 0 && p.net === 'NONE' ? 'UNLIMITED' : fmt(p.oop);
+  $id('ins-net').textContent = p.net;
+  var pct = p.ded > 0 ? Math.min(100, (G.dedMet / p.ded) * 100) : 0;
+  $id('ded-bar').style.width = pct + '%';
+  $id('ded-pct').textContent = Math.round(pct) + '%';
+}
+
+function renderObjectives() {
+  var ol = $id('objlist');
+  if (!G.char || !G.char.rayArc) {
+    ol.innerHTML = '<div style="font-size:11px;color:var(--dim);">Sandbox -- no story arc.</div>';
+    return;
+  }
+  var html = '';
+  for (var i = 0; i < ARC_STEPS.length; i++) {
+    var s = ARC_STEPS[i];
+    var done = G.arcDone.indexOf(s.id) !== -1;
+    var active = !done && G.arcDone.length === i;
+    var cls = done ? 'done' : active ? 'active' : 'locked';
+    var ncls = done ? 'obj-n on-done' : active ? 'obj-n on-active' : 'obj-n';
+    html += '<div class="obj-row ' + cls + '">';
+    html += '<span class="' + ncls + '">' + (i + 1) + '</span>';
+    html += '<span>' + s.label + '</span>';
+    html += '</div>';
+  }
+  ol.innerHTML = html;
+}
+
+// ============================================================
+// DEATH / WIN
+// ============================================================
+
+function checkDeath() {
+  if (G.hp > 0) return;
+  var cause = 'MEDICAL NEGLECT';
+  var lesson = 'Untreated conditions and skipped medications create a death spiral. The system lets you make these choices without warning you where they lead.';
+  if (G.crimes >= 2) { cause = 'CRIMINALIZED FOR SURVIVING'; lesson = 'Selling medications is a felony. Black-market drugs are dangerous. These are survival responses to a system that prices out the poor.'; }
+  else if (G.debt > 18000) { cause = 'FINANCIAL RUIN'; lesson = '530,000 Americans file bankruptcy from medical bills annually. Most had some insurance. The gaps accumulate until people stop seeking care.'; }
+  else if (G.stress >= 100) { cause = 'SYSTEM-INDUCED COLLAPSE'; lesson = 'The administrative burden of American healthcare causes documented psychological harm. It is designed to make you give up.'; }
+  $id('dh').textContent = 'YOU DIED';
+  $id('dc').textContent = cause;
+  $id('dstats').innerHTML =
+    '<div class="dsr"><span>Survived</span><span>' + G.day + ' days</span></div>' +
+    '<div class="dsr"><span>Final Health</span><span style="color:var(--blood)">' + Math.max(0, Math.round(G.hp)) + '/100</span></div>' +
+    '<div class="dsr"><span>Cash</span><span>' + fmt(G.cash) + '</span></div>' +
+    '<div class="dsr"><span>Medical Debt</span><span style="color:var(--blood)">' + fmt(G.debt) + '</span></div>' +
+    '<div class="dsr"><span>Arc Steps Done</span><span>' + G.arcDone.length + '/8</span></div>' +
+    '<div class="dsr"><span>Rights Learned</span><span>' + G.rights.length + '</span></div>';
+  $id('dless').innerHTML = '<strong style="color:var(--yellow)">THE SYSTEM TAUGHT YOU:</strong><br><br>' + lesson;
+  $id('deathscreen').style.display = 'flex';
+}
+
+function showWin() {
+  $id('winstats').innerHTML =
+    '<div class="dsr"><span>Days Survived</span><span style="color:var(--green)">' + G.day + '</span></div>' +
+    '<div class="dsr"><span>Final Health</span><span style="color:var(--green)">' + Math.round(G.hp) + '/100</span></div>' +
+    '<div class="dsr"><span>Cash</span><span>' + fmt(G.cash) + '</span></div>' +
+    '<div class="dsr"><span>Medical Debt</span><span>' + fmt(G.debt) + '</span></div>' +
+    '<div class="dsr"><span>Rights Unlocked</span><span style="color:var(--green)">' + G.rights.length + '</span></div>';
+  $id('winless').innerHTML =
+    '<strong style="color:var(--green)">YOU NAVIGATED THE SYSTEM:</strong><br><br>' +
+    'Ray started with $160, no insurance, 4 days without insulin. Through Walmart insulin, ' +
+    'emergency Medi-Cal, prior auth appeals, and the No Surprises Act -- he survived. ' +
+    'The difference is health insurance literacy.';
+  $id('winscreen').style.display = 'flex';
+}
+
+// ============================================================
+// CHARACTER SELECT
+// ============================================================
+
+function showCharSelect() {
+  $id('titlescreen').style.display = 'none';
+  $id('charscreen').style.display = 'flex';
+  var grid = $id('chargrid');
+  var html = '';
+  for (var i = 0; i < CHARS.length; i++) {
+    var ch = CHARS[i];
+    html += '<div class="cc ' + (ch.rayArc ? 'raycard' : '') + '" data-charid="' + ch.id + '">';
+    html += '<div class="diff ' + ch.diffCls + '">' + ch.diff + '</div>';
+    html += '<div class="cc-icon">' + (ch.id === 'ray' ? 'RAY' : ch.id === 'gig' ? 'GIG' : ch.id === 'cobra' ? 'COBRA' : 'FREE') + '</div>';
+    html += '<div class="cc-name">' + ch.name + (ch.age ? ', ' + ch.age : '') + '</div>';
+    html += '<div class="cc-desc">' + ch.story + '</div>';
+    html += '<div class="cc-plan"><div class="cc-pn">' + ch.plan.name + '</div>';
+    html += '<div class="cc-st"><span>Deductible</span><span>' + (ch.plan.ded === 0 ? 'NONE' : fmt(ch.plan.ded)) + '</span></div>';
+    html += '<div class="cc-st"><span>Coinsurance</span><span>' + ch.plan.coin + '%</span></div>';
+    html += '<div class="cc-st"><span>ER Copay</span><span>' + (ch.plan.erCopay === 0 && ch.plan.net === 'NONE' ? 'FULL PRICE' : fmt(ch.plan.erCopay)) + '</span></div>';
+    html += '<div class="cc-st"><span>Starting Cash</span><span>' + fmt(ch.cash) + '</span></div>';
+    html += '</div></div>';
+  }
+  grid.innerHTML = html;
+  var cards = grid.querySelectorAll('.cc');
+  for (var j = 0; j < cards.length; j++) {
+    (function(card) {
+      card.addEventListener('click', function() {
+        startGame(card.getAttribute('data-charid'));
+      });
+    })(cards[j]);
+  }
+}
+
+function startGame(charId) {
+  var found = null;
+  for (var i = 0; i < CHARS.length; i++) { if (CHARS[i].id === charId) { found = CHARS[i]; break; } }
+  if (!found) return;
+  // Deep copy char
+  G.char = JSON.parse(JSON.stringify(found));
+  G.cash = found.cash; G.hp = found.hp; G.en = found.en; G.stress = found.stress;
+  G.conds = JSON.parse(JSON.stringify(found.conds));
+  G.meds = JSON.parse(JSON.stringify(found.meds));
+  G.day = 1; G.tphase = 0; G.tod = 'MORNING';
+  G.debt = 0; G.dedMet = 0; G.criminal = false; G.crimes = 0;
+  G.rights = []; G.arcDone = []; G.arcTriggered = {};
+  G.pendingRef = false; G.mediCal = false; G.turns = 0;
+  $id('charscreen').style.display = 'none';
+  $id('app').style.display = 'grid';
+  renderMap();
+  updateInsCard();
+  renderObjectives();
+  travelTo('home');
+  updateUI();
+  addLog(found.name + ' -- Day 1. ' + found.plan.name + '.', 'info');
+  if (found.rayArc) {
+    addLog("RAY'S STORY: Follow OBJECTIVE panel. Highlighted locations show where to go.", 'warn');
+    // Trigger first arc step prompt
+    var firstStep = currentArcStep();
+    if (firstStep) {
+      var locName = '';
+      for (var i = 0; i < LOCS.length; i++) { if (LOCS[i].id === firstStep.target) { locName = LOCS[i].n; break; } }
+      addLog('OBJECTIVE: ' + firstStep.label + ' -- Go to ' + locName, 'warn');
+      notify('Start: ' + firstStep.label, 'warn');
+      highlightTarget(firstStep.target, firstStep.alts);
+    }
+  } else {
+    addLog('SANDBOX MODE: Explore locations. Make choices. Survive.', 'info');
+  }
+}
+
+// ============================================================
+// EVENT LISTENERS
+// ============================================================
+
+document.addEventListener('DOMContentLoaded', function() {
+  $id('startbtn').addEventListener('click', showCharSelect);
+  $id('mcont').addEventListener('click', closeModal);
+  $id('restartbtn').addEventListener('click', function() { location.reload(); });
+  $id('winrestart').addEventListener('click', function() { location.reload(); });
+});
+</script>
+</body>
+</html>
