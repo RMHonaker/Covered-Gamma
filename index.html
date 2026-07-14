@@ -1,0 +1,1509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Covered</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Rye&family=Nunito:wght@400;700;800;900&display=swap');
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{background:#1a1209;color:#f0e8d0;font-family:'Nunito',sans-serif;max-width:480px;margin:0 auto;min-height:100vh}
+.pg{display:none;min-height:100vh}
+.pg.on{display:block}
+
+/* TITLE */
+#p0{background:linear-gradient(180deg,#0a0a1a 0%,#1a2a0a 40%,#2a1a08 100%);
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  text-align:center;padding:40px 24px;min-height:100vh}
+#p0.on{display:flex}
+.title-h{font-family:'Rye',serif;font-size:clamp(40px,12vw,64px);color:#e8c060;
+  text-shadow:0 0 30px rgba(232,192,96,.4),0 3px 0 #6a4010;margin-bottom:4px}
+.title-sub{font-size:12px;font-weight:800;letter-spacing:4px;color:#8a7a5a;margin-bottom:22px}
+.title-card{background:rgba(255,255,255,.06);border:1px solid #3a2a1a;border-radius:12px;
+  padding:16px 20px;font-size:13px;line-height:1.9;color:#c0b090;margin-bottom:26px;
+  text-align:left;max-width:380px}
+.title-card strong{color:#e8c060}
+
+/* BUTTONS */
+.btn{display:block;width:100%;border:none;border-radius:8px;font-family:'Nunito',sans-serif;
+  font-weight:800;cursor:pointer;padding:14px;font-size:16px;margin-bottom:10px;
+  transition:transform .1s;-webkit-appearance:none}
+.btn:active{transform:scale(.97)}
+.btn-y{background:#c8900a;color:#fff8e8;box-shadow:0 3px 0 #7a5006,0 5px 14px rgba(0,0,0,.4)}
+.btn-g{background:#2a7a2a;color:#e8f8e8;box-shadow:0 3px 0 #0a4a0a,0 5px 14px rgba(0,0,0,.4)}
+.btn-ghost{background:transparent;border:2px solid #3a2a1a;color:#8a7a5a;box-shadow:none;font-size:14px}
+
+/* CREATE */
+#p1{background:#12100a;padding:0 0 80px}
+.create-header{background:#1a1408;border-bottom:2px solid #3a2810;
+  padding:16px 20px;position:sticky;top:0;z-index:10}
+.crh{font-family:'Rye',serif;font-size:20px;color:#e8c060;margin-bottom:2px}
+.crn{font-size:12px;color:#8a7a5a}
+.create-body{padding:16px 20px}
+
+/* AVATAR BUILDER */
+.av-stage{background:#1e1a10;border:2px solid #3a2810;border-radius:14px;
+  padding:16px;margin-bottom:20px;display:flex;flex-direction:column;align-items:center}
+.av-stage canvas{display:block;margin:0 auto}
+.av-name-badge{font-family:'Rye',serif;font-size:14px;color:#e8c060;margin-top:8px;min-height:20px}
+.av-stats-bar{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap;justify-content:center}
+.av-stat{background:#12100a;border:1px solid #3a2810;border-radius:6px;
+  padding:3px 8px;font-size:10px;font-weight:800;color:#c0a060}
+
+/* OPTION SECTIONS */
+.opt-section{margin-bottom:18px}
+.opt-label{font-size:11px;font-weight:800;color:#c0a060;letter-spacing:2px;
+  margin-bottom:8px;display:flex;align-items:center;gap:8px}
+.opt-label span{font-size:10px;font-weight:400;color:#6a5a3a;letter-spacing:0}
+.opt-row{display:flex;flex-wrap:wrap;gap:8px}
+.opt-chip{background:#1e1a10;border:2px solid #3a2a1a;border-radius:8px;
+  padding:7px 12px;cursor:pointer;font-size:12px;font-weight:700;
+  color:#c0b090;transition:all .15s;-webkit-appearance:none}
+.opt-chip.on{border-color:#c8900a;background:#2a1e08;color:#e8c060}
+.opt-chip.on-g{border-color:#2a7a2a;background:#0a1e0a;color:#60c080}
+.opt-chip.on-b{border-color:#2a4a8a;background:#0a0e1a;color:#6090e0}
+
+/* COLOR SWATCHES */
+.swatch-row{display:flex;gap:8px;flex-wrap:wrap}
+.swatch{width:32px;height:32px;border-radius:50%;cursor:pointer;
+  border:3px solid transparent;transition:all .15s;flex-shrink:0}
+.swatch.on{border-color:#e8c060;transform:scale(1.15)}
+
+/* SLIDER */
+.slider-wrap{display:flex;align-items:center;gap:10px}
+.slider-wrap input[type=range]{flex:1;-webkit-appearance:none;height:6px;
+  background:#3a2a1a;border-radius:3px;outline:none;cursor:pointer}
+.slider-wrap input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;
+  width:22px;height:22px;border-radius:50%;background:#c8900a;cursor:pointer;
+  box-shadow:0 2px 6px rgba(0,0,0,.4)}
+.slider-val{font-family:'Rye',serif;font-size:14px;color:#e8c060;min-width:50px;text-align:right}
+
+/* NAME INPUT */
+.nin{width:100%;background:#1e1a10;border:2px solid #3a2a1a;border-radius:8px;
+  padding:11px 14px;font-size:16px;font-weight:700;outline:none;
+  color:#f0e8d0;font-family:'Nunito',sans-serif;-webkit-appearance:none}
+.nin:focus{border-color:#c8900a}
+
+/* DIVIDER */
+.divider{border:none;border-top:1px solid #2a2010;margin:20px 0}
+
+/* PLAN CARDS */
+.plan-cards{display:flex;flex-direction:column;gap:10px}
+.plan-card{background:#1e1a10;border:2px solid #3a2a1a;border-radius:12px;
+  padding:12px 14px;cursor:pointer;transition:all .15s;-webkit-appearance:none}
+.plan-card.on{border-color:#c8900a;background:#2a1e08}
+.plan-card.on .plan-name{color:#e8c060}
+.plan-name{font-family:'Rye',serif;font-size:15px;color:#c0b090;margin-bottom:6px}
+.plan-tag{display:inline-block;font-size:9px;font-weight:800;letter-spacing:1px;
+  padding:2px 7px;border-radius:5px;margin-left:6px;vertical-align:middle}
+.plan-tag.cheap{background:#2a3a1a;color:#90c060}
+.plan-tag.balanced{background:#2a2a1a;color:#e8c060}
+.plan-tag.premium{background:#1a2a3a;color:#6090e0}
+.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:4px 12px;font-size:11px;color:#8a7a5a}
+.plan-grid b{color:#c0b090;font-weight:800}
+.plan-prem{font-size:12px;color:#e0c060;font-weight:800;margin-top:6px}
+
+/* HUD PLAN BADGE */
+.plan-badge{font-size:10px;font-weight:800;letter-spacing:1px;color:#8a7a5a;margin-bottom:6px}
+.plan-badge b{color:#e8c060}
+.plan-badge .pos{color:#40c840}
+.plan-badge .neg{color:#e84040}
+
+/* GAME */
+#p2{background:#0e0c08}
+.trail-top{background:#12100a;border-bottom:2px solid #2a2010;
+  padding:10px 14px;position:sticky;top:0;z-index:10}
+.trail-title{font-family:'Rye',serif;font-size:14px;color:#e8c060;margin-bottom:6px}
+.trail-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.tstat{background:#1a1408;border-radius:8px;padding:6px;text-align:center}
+.tstat-l{font-size:9px;font-weight:800;color:#6a5a3a;letter-spacing:1px}
+.tstat-v{font-size:14px;font-weight:900;margin-top:2px}
+.party-bar{display:flex;gap:8px;padding:8px 14px;background:#0e0c08;
+  border-bottom:1px solid #2a2010;overflow-x:auto}
+.party-member{flex-shrink:0;background:#12100a;border:1px solid #2a2010;
+  border-radius:8px;padding:6px 10px;text-align:center;min-width:56px}
+.pm-icon{font-size:18px}
+.pm-name{font-size:9px;font-weight:800;color:#8a7a5a;margin-top:2px}
+.pm-hp{font-size:11px;font-weight:900}
+.know-bar{padding:8px 14px;background:#0a0908;border-bottom:1px solid #2a2010}
+.know-bar-title{font-size:10px;font-weight:800;color:#6a5a3a;letter-spacing:2px;margin-bottom:6px}
+.know-items{display:flex;flex-wrap:wrap;gap:6px}
+.know-pill{background:#1a1408;border:1px solid #3a2810;border-radius:6px;
+  padding:4px 10px;font-size:11px;font-weight:800;color:#c0a060;cursor:pointer;transition:all .15s}
+.know-pill.ins{border-color:#2a3a6a;color:#90b0e0}
+.know-pill.money{border-color:#4a3a0a;color:#e0c060}
+.know-pill.health{border-color:#0a3a1a;color:#60c080}
+canvas#trail-cv{width:100%;display:block}
+.trail-log{padding:14px 16px 100px}
+.log-entry{border-left:3px solid #3a2a1a;padding:10px 14px;margin-bottom:8px;
+  background:#12100a;border-radius:0 10px 10px 0;font-size:13px;line-height:1.7;color:#c0b090}
+.log-entry.event{border-color:#c8900a;background:#1a1408}
+.log-entry.bad{border-color:#8a2a1a;background:#180a08}
+.log-entry.good{border-color:#2a7a2a;background:#081408}
+.log-entry.learn{border-color:#4a60a0;background:#080e1a}
+.wp-banner{background:linear-gradient(90deg,#1a1000,#2a1e04,#1a1000);
+  border-top:2px solid #c8900a;border-bottom:2px solid #c8900a;
+  padding:12px 16px;text-align:center;margin-bottom:12px}
+.wp-icon{font-size:36px;margin-bottom:4px}
+.wp-name{font-family:'Rye',serif;font-size:18px;color:#e8c060}
+.wp-sub{font-size:11px;color:#8a7a5a;margin-top:2px}
+
+/* MODAL */
+#modal{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:50;
+  display:none;align-items:flex-end;justify-content:center;padding:0}
+#modal.on{display:flex}
+#mbox{background:#1a1408;border:2px solid #3a2810;border-radius:20px 20px 0 0;
+  width:100%;max-width:480px;max-height:90vh;overflow-y:auto;padding:20px 18px 30px}
+.m-icon{font-size:44px;text-align:center;margin-bottom:6px}
+.m-season{font-size:10px;font-weight:800;letter-spacing:3px;color:#8a7a5a;text-align:center;margin-bottom:4px}
+.m-title{font-family:'Rye',serif;font-size:20px;color:#e8c060;margin-bottom:10px;text-align:center;line-height:1.3}
+.m-npc{text-align:center;margin-bottom:10px;font-size:13px;color:#8a7a5a;padding-bottom:10px;border-bottom:1px solid #2a2010}
+.m-explain{background:#0e1a0e;border:1px solid #1a3a1a;border-radius:10px;padding:12px 14px;margin-bottom:12px;font-size:13px;line-height:1.9;color:#a0c0a0}
+.m-explain strong{color:#e8c060}
+.m-body{font-size:14px;line-height:1.9;color:#c0b090;margin-bottom:12px;white-space:pre-line}
+.m-body strong{color:#e8c060}
+.m-learn{background:#0a0e1a;border:1px solid #2a3050;border-radius:10px;padding:12px 14px;margin-bottom:14px}
+.m-learn-lbl{font-size:10px;font-weight:800;letter-spacing:2px;color:#6080c0;margin-bottom:6px}
+.m-learn-txt{font-size:12px;line-height:1.8;color:#90a8d0}
+.m-learn-txt strong{color:#b0c8f0}
+.m-choices{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.m-ch{background:#1e1a10;border:2px solid #3a2810;border-radius:12px;
+  padding:14px 16px;cursor:pointer;text-align:left;width:100%;
+  font-family:'Nunito',sans-serif;font-size:14px;font-weight:700;
+  color:#d0c090;line-height:1.5;-webkit-appearance:none;transition:all .15s}
+.m-ch:hover{border-color:#c8900a;background:#251e08;color:#e8c060}
+.m-ch.risk{border-color:#4a1a10}
+.m-ch.risk:hover{border-color:#c83020;background:#1a0808}
+.m-ch:disabled{opacity:.4;cursor:default}
+.ch-meta{display:block;font-size:11px;margin-top:4px;font-weight:800}
+.ch-xp{color:#8a50a0}
+.ch-cost{color:#e84040}
+.ch-gain{color:#40c840}
+
+/* KNOWLEDGE POPUP */
+#kpop{position:fixed;inset:0;background:rgba(0,0,0,.88);z-index:60;display:none;align-items:flex-end;justify-content:center}
+#kpop.on{display:flex}
+#kpopbox{background:#1a1408;border:2px solid #2a3050;border-radius:20px 20px 0 0;
+  width:100%;max-width:480px;padding:20px 18px 30px;max-height:70vh;overflow-y:auto}
+.kpop-tag{font-size:10px;font-weight:800;letter-spacing:2px;color:#6080c0;margin-bottom:6px}
+.kpop-title{font-family:'Rye',serif;font-size:18px;color:#e8c060;margin-bottom:10px}
+.kpop-txt{font-size:13px;line-height:1.9;color:#90a8d0}
+
+/* TOAST */
+#toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);
+  background:#1e1a10;border:1px solid #3a2810;color:#e8c060;
+  border-radius:20px;padding:10px 20px;font-size:13px;font-weight:800;
+  opacity:0;transition:opacity .3s;pointer-events:none;z-index:99;white-space:nowrap}
+#toast.show{opacity:1}
+
+/* END */
+#p3{background:linear-gradient(180deg,#0a1408 0%,#1a2a08 50%,#2a1a04 100%);
+  display:none;flex-direction:column;align-items:center;
+  text-align:center;padding:40px 20px 60px;min-height:100vh}
+#p3.on{display:flex}
+.end-art{font-size:64px;margin-bottom:10px}
+.end-h{font-family:'Rye',serif;font-size:clamp(28px,8vw,48px);color:#e8c060;
+  text-shadow:0 0 20px rgba(232,192,96,.3);margin-bottom:8px}
+.end-sub{font-size:14px;font-weight:700;color:#8a7a5a;margin-bottom:22px}
+.end-av{background:#1a1408;border:2px solid #3a2810;border-radius:14px;
+  padding:16px;margin-bottom:16px;text-align:center}
+.end-scroll{background:rgba(255,255,255,.05);border:1px solid #3a2810;
+  border-radius:12px;padding:18px 20px;width:100%;text-align:left;margin-bottom:16px}
+.end-row{display:flex;justify-content:space-between;padding:6px 0;
+  border-bottom:1px solid #2a2010;font-size:13px}
+.end-row:last-child{border:none}
+.end-epitaph{background:rgba(255,255,255,.04);border:1px solid #3a2810;
+  border-radius:12px;padding:14px 18px;width:100%;font-size:13px;
+  line-height:1.9;color:#a09070;margin-bottom:16px;font-style:italic;text-align:left}
+.end-learned{width:100%;text-align:left;margin-bottom:22px}
+.el-h{font-family:'Rye',serif;font-size:16px;color:#e8c060;margin-bottom:10px}
+.el-item{background:#12100a;border:1px solid #2a2010;border-radius:8px;
+  padding:8px 12px;margin-bottom:6px;font-size:11px;line-height:1.7;color:#b0a080}
+.el-tag{display:inline-block;color:#fff;border-radius:4px;padding:2px 7px;font-size:9px;font-weight:800;margin-right:5px}
+</style>
+</head>
+<body>
+
+<!-- TITLE -->
+<div id="p0" class="pg on">
+  <div style="font-size:52px;margin-bottom:8px">🛤️</div>
+  <div class="title-h">Covered</div>
+  <div class="title-sub">A LIFE, INSURED</div>
+  <div class="title-card">
+    The year is now. You just got your first real job.<br><br>
+    The road ahead: decades of decisions, disasters, and doctors.<br><br>
+    <strong>Your choices determine if you make it.</strong><br><br>
+    Many have tried to make it to retirement with their savings intact. Not all of them did.
+  </div>
+  <button class="btn btn-y" onclick="showPg('p1')">Begin</button>
+  <p style="font-size:11px;color:#6a5a3a;margin-top:8px;font-style:italic">Based on real U.S. healthcare rules. The ox can die.</p>
+</div>
+
+<!-- CREATE -->
+<div id="p1" class="pg">
+  <div class="create-header">
+    <div class="crh">Build Your Traveler</div>
+    <div class="crn">Every choice here shapes the life ahead</div>
+  </div>
+  <div class="create-body">
+
+    <!-- AVATAR LIVE PREVIEW -->
+    <div class="av-stage">
+      <canvas id="av-cv" width="160" height="220"></canvas>
+      <div class="av-name-badge" id="av-name-badge">Your Traveler</div>
+      <div class="av-stats-bar" id="av-stats-bar"></div>
+    </div>
+
+    <!-- NAME -->
+    <div class="opt-section">
+      <div class="opt-label">YOUR NAME</div>
+      <input id="nm" class="nin" placeholder="Who are you?" maxlength="20"
+        oninput="AV.name=this.value;updateBadge();drawAv('av-cv')">
+    </div>
+
+    <hr class="divider">
+
+    <!-- GENDER -->
+    <div class="opt-section">
+      <div class="opt-label">GENDER <span>affects health screenings and some risk events</span></div>
+      <div class="opt-row" id="g-gender">
+        <div class="opt-chip on" data-v="male">Male</div>
+        <div class="opt-chip" data-v="female">Female</div>
+        <div class="opt-chip" data-v="nonbinary">Nonbinary</div>
+      </div>
+    </div>
+
+    <!-- STARTING AGE -->
+    <div class="opt-section">
+      <div class="opt-label">STARTING AGE <span>younger = more years to navigate, older = different challenges</span></div>
+      <div class="slider-wrap">
+        <span style="font-size:12px;color:#6a5a3a">22</span>
+        <input type="range" min="22" max="100" value="22" id="sl-age"
+          oninput="AV.age=parseInt(this.value);document.getElementById('v-age').textContent=this.value;updateBadge();drawAv('av-cv')">
+        <span style="font-size:12px;color:#6a5a3a">100</span>
+        <div class="slider-val" id="v-age">22</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- SKIN TONE -->
+    <div class="opt-section">
+      <div class="opt-label">SKIN TONE</div>
+      <div class="swatch-row" id="sw-skin"></div>
+    </div>
+
+    <!-- HAIR STYLE -->
+    <div class="opt-section">
+      <div class="opt-label">HAIR STYLE</div>
+      <div class="opt-row" id="g-hair">
+        <div class="opt-chip on" data-v="short">Short</div>
+        <div class="opt-chip" data-v="medium">Medium</div>
+        <div class="opt-chip" data-v="long">Long</div>
+        <div class="opt-chip" data-v="curly">Curly</div>
+        <div class="opt-chip" data-v="bun">Bun</div>
+        <div class="opt-chip" data-v="shaved">Shaved</div>
+      </div>
+    </div>
+
+    <!-- HAIR COLOR -->
+    <div class="opt-section">
+      <div class="opt-label">HAIR COLOR</div>
+      <div class="swatch-row" id="sw-hair"></div>
+    </div>
+
+    <!-- EYES -->
+    <div class="opt-section">
+      <div class="opt-label">EYE COLOR</div>
+      <div class="swatch-row" id="sw-eye"></div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- BODY TYPE -->
+    <div class="opt-section">
+      <div class="opt-label">BODY TYPE</div>
+      <div class="opt-row" id="g-body">
+        <div class="opt-chip on" data-v="slim">Slim</div>
+        <div class="opt-chip" data-v="average">Average</div>
+        <div class="opt-chip" data-v="athletic">Athletic</div>
+        <div class="opt-chip" data-v="fuller">Fuller</div>
+        <div class="opt-chip" data-v="heavy">Heavy</div>
+      </div>
+    </div>
+
+    <!-- HEIGHT -->
+    <div class="opt-section">
+      <div class="opt-label">HEIGHT</div>
+      <div class="slider-wrap">
+        <span style="font-size:12px;color:#6a5a3a">4'8"</span>
+        <input type="range" min="56" max="78" value="67" id="sl-height"
+          oninput="AV.height=parseInt(this.value);document.getElementById('v-ht').textContent=fmtHeight(this.value);updateBadge()">
+        <span style="font-size:12px;color:#6a5a3a">6'6"</span>
+        <div class="slider-val" id="v-ht">5'7"</div>
+      </div>
+    </div>
+
+    <!-- WEIGHT -->
+    <div class="opt-section">
+      <div class="opt-label">WEIGHT <span>used to calculate BMI for health events</span></div>
+      <div class="slider-wrap">
+        <span style="font-size:12px;color:#6a5a3a">100</span>
+        <input type="range" min="100" max="350" value="155" id="sl-weight"
+          oninput="AV.weight=parseInt(this.value);document.getElementById('v-wt').textContent=this.value+' lbs';updateBadge();drawAv('av-cv')">
+        <span style="font-size:12px;color:#6a5a3a">350</span>
+        <div class="slider-val" id="v-wt">155 lbs</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- OUTFIT -->
+    <div class="opt-section">
+      <div class="opt-label">OUTFIT STYLE</div>
+      <div class="opt-row" id="g-outfit">
+        <div class="opt-chip on" data-v="casual">Casual</div>
+        <div class="opt-chip" data-v="business">Business</div>
+        <div class="opt-chip" data-v="athletic">Athletic</div>
+        <div class="opt-chip" data-v="outdoorsy">Outdoorsy</div>
+        <div class="opt-chip" data-v="scrubs">Scrubs</div>
+        <div class="opt-chip" data-v="streetwear">Streetwear</div>
+      </div>
+    </div>
+
+    <!-- ACCESSORIES -->
+    <div class="opt-section">
+      <div class="opt-label">ACCESSORIES</div>
+      <div class="opt-row" id="g-acc">
+        <div class="opt-chip on" data-v="none">None</div>
+        <div class="opt-chip" data-v="glasses">Glasses</div>
+        <div class="opt-chip" data-v="sunglasses">Sunglasses</div>
+        <div class="opt-chip" data-v="cowboy">Cowboy Hat</div>
+        <div class="opt-chip" data-v="beanie">Beanie</div>
+        <div class="opt-chip" data-v="cap">Baseball Cap</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- LIFESTYLE -->
+    <div class="opt-section">
+      <div class="opt-label">DIET HABITS <span>shapes your health risk profile</span></div>
+      <div class="opt-row" id="g-diet">
+        <div class="opt-chip on" data-v="good">Whole foods</div>
+        <div class="opt-chip" data-v="mixed">Hit or miss</div>
+        <div class="opt-chip" data-v="poor">Processed everything</div>
+      </div>
+    </div>
+    <div class="opt-section">
+      <div class="opt-label">EXERCISE</div>
+      <div class="opt-row" id="g-exercise">
+        <div class="opt-chip on" data-v="active">Active</div>
+        <div class="opt-chip" data-v="moderate">Moderate</div>
+        <div class="opt-chip" data-v="sedentary">Sedentary</div>
+      </div>
+    </div>
+    <div class="opt-section">
+      <div class="opt-label">SLEEP</div>
+      <div class="opt-row" id="g-sleep">
+        <div class="opt-chip on" data-v="good">7-9 hrs</div>
+        <div class="opt-chip" data-v="mixed">5-7 hrs</div>
+        <div class="opt-chip" data-v="poor">Under 5</div>
+      </div>
+    </div>
+    <div class="opt-section">
+      <div class="opt-label">STRESS</div>
+      <div class="opt-row" id="g-stress">
+        <div class="opt-chip on" data-v="low">Handles it well</div>
+        <div class="opt-chip" data-v="medium">Somewhat stressed</div>
+        <div class="opt-chip" data-v="high">Chronically stressed</div>
+      </div>
+    </div>
+    <div class="opt-section">
+      <div class="opt-label">TOBACCO</div>
+      <div class="opt-row" id="g-tobacco">
+        <div class="opt-chip on" data-v="none">Non-smoker</div>
+        <div class="opt-chip" data-v="current">Current smoker</div>
+      </div>
+    </div>
+    <div class="opt-section">
+      <div class="opt-label">EMPLOYMENT</div>
+      <div class="opt-row" id="g-job">
+        <div class="opt-chip on" data-v="employer">Full-time job</div>
+        <div class="opt-chip" data-v="gig">Gig work</div>
+        <div class="opt-chip" data-v="student">Student</div>
+      </div>
+    </div>
+
+    <hr class="divider">
+
+    <!-- FINANCIAL POSITION -->
+    <div class="opt-section">
+      <div class="opt-label">ANNUAL SALARY <span>sets your starting cash and monthly budget</span></div>
+      <div class="slider-wrap">
+        <span style="font-size:12px;color:#6a5a3a">$25k</span>
+        <input type="range" min="25000" max="220000" step="1000" value="55000" id="sl-salary"
+          oninput="C.salary=parseInt(this.value);document.getElementById('v-salary').textContent=fmtSalary(this.value);renderPlanCards();">
+        <span style="font-size:12px;color:#6a5a3a">$220k</span>
+        <div class="slider-val" id="v-salary">$55k/yr</div>
+      </div>
+    </div>
+
+    <!-- INSURANCE PLAN PICKER -->
+    <div class="opt-section">
+      <div class="opt-label">CHOOSE YOUR COVERAGE <span>the biggest decision on the whole trip</span></div>
+      <div id="plan-cards" class="plan-cards"></div>
+    </div>
+
+    <br>
+    <button class="btn btn-y" onclick="startGame()">Start Your Life</button>
+    <button class="btn btn-ghost" onclick="showPg('p0')">Back</button>
+    <br>
+  </div>
+</div>
+
+<!-- GAME -->
+<div id="p2" class="pg">
+  <div class="trail-top">
+    <div class="trail-title" id="hud-title">Covered</div>
+    <div class="plan-badge" id="plan-badge"></div>
+    <div class="trail-stats">
+      <div class="tstat"><div class="tstat-l">HEALTH</div><div class="tstat-v" id="s-hp" style="color:#e84040">80</div></div>
+      <div class="tstat"><div class="tstat-l">SAVINGS</div><div class="tstat-v" id="s-sv" style="color:#40c840;font-size:12px">$2.4k</div></div>
+      <div class="tstat"><div class="tstat-l">AGE</div><div class="tstat-v" id="s-age" style="color:#e8c060">22</div></div>
+      <div class="tstat"><div class="tstat-l">MILES</div><div class="tstat-v" id="s-mi" style="color:#a090c0">0</div></div>
+    </div>
+  </div>
+  <div class="party-bar" id="party-bar"></div>
+  <div class="know-bar" id="know-bar" style="display:none">
+    <div class="know-bar-title">YOUR KNOWLEDGE -- tap to review</div>
+    <div class="know-items" id="know-items"></div>
+  </div>
+  <canvas id="trail-cv" height="110"></canvas>
+  <div class="trail-log" id="trail-log"></div>
+</div>
+
+<!-- END -->
+<div id="p3" class="pg">
+  <div class="end-art" id="end-art">🌅</div>
+  <div class="end-h" id="end-h">Journey's End</div>
+  <div class="end-sub" id="end-sub">Every choice adds up.</div>
+  <div class="end-av"><canvas id="end-av-cv" width="160" height="220" style="display:block;margin:0 auto"></canvas></div>
+  <div class="end-scroll" id="end-scroll"></div>
+  <div class="end-epitaph" id="end-epitaph"></div>
+  <div class="end-learned" id="end-learned"></div>
+  <button class="btn btn-y" style="max-width:300px" onclick="location.reload()">Play Again</button>
+</div>
+
+<div id="modal"><div id="mbox"></div></div>
+<div id="kpop"><div id="kpopbox"></div></div>
+<div id="toast"></div>
+
+<script>
+// ── AVATAR STATE ──────────────────────────────────────
+var AV = {
+  name:"", gender:"male", age:22,
+  skin:"#e8c49a", hair:"short", hairColor:"#3a2010", eyeColor:"#2a1a0a",
+  body:"average", height:67, weight:155,
+  outfit:"casual", acc:"none"
+};
+
+var SKINS=["#fde8c8","#e8c49a","#c8965a","#a06030","#7a4020","#4a1a08"];
+var HAIR_COLORS=["#1a0a00","#3a2010","#7a5020","#c8902a","#e8c060","#e0e0e0","#c03030","#3040a0"];
+var EYE_COLORS=["#2a1a0a","#4a3010","#2a4a1a","#1a3a6a","#6a3a6a","#888888"];
+
+var OUTFIT_COLORS={
+  casual:  {top:"#3a5a7a", pants:"#2a3a6a", shoe:"#2a1a0a"},
+  business:{top:"#1a2a4a", pants:"#1a2040", shoe:"#1a1008"},
+  athletic:{top:"#2a7a3a", pants:"#1a4a7a", shoe:"#f0f0f0"},
+  outdoorsy:{top:"#5a4a2a", pants:"#3a5a2a", shoe:"#3a2010"},
+  scrubs:  {top:"#2a6a7a", pants:"#2a6a7a", shoe:"#f0f0f0"},
+  streetwear:{top:"#1a1a2a", pants:"#0a0a1a", shoe:"#e0e020"}
+};
+
+function bmi(){
+  var h=AV.height, w=AV.weight;
+  return Math.round((w/(h*h))*703);
+}
+function fmtHeight(inches){
+  var ft=Math.floor(inches/12), inc=inches%12;
+  return ft+"'"+inc+'"';
+}
+function bmiLabel(){
+  var b=bmi();
+  if(b<18.5)return"Underweight";
+  if(b<25)return"Healthy";
+  if(b<30)return"Overweight";
+  return"Obese";
+}
+
+function updateBadge(){
+  var el=document.getElementById("av-name-badge");
+  if(el) el.textContent=(AV.name||"Your Traveler");
+  var sb=document.getElementById("av-stats-bar");
+  if(sb){
+    var b=bmi();
+    sb.innerHTML=
+      "<div class='av-stat'>Age: "+AV.age+"</div>"+
+      "<div class='av-stat'>BMI: "+b+" ("+bmiLabel()+")</div>"+
+      "<div class='av-stat'>"+fmtHeight(AV.height)+" / "+AV.weight+"lbs</div>"+
+      (typeof C!=="undefined"&&C.salary?"<div class='av-stat'>"+fmtSalary(C.salary)+"</div>":"");
+  }
+}
+
+// ── AVATAR DRAW ───────────────────────────────────────
+function drawAv(canvasId, overrideHp, overrideAge){
+  var cv=document.getElementById(canvasId);
+  if(!cv)return;
+  var ctx=cv.getContext("2d");
+  var W=160, H=220;
+  cv.width=W; cv.height=H;
+  ctx.clearRect(0,0,W,H);
+
+  var hp = (overrideHp !== undefined) ? overrideHp : (window.G ? G.hp : 80);
+  var age = (overrideAge !== undefined) ? overrideAge : AV.age;
+  var bmiVal = bmi();
+  var cx=W/2;
+
+  // Body width scale by body type & weight
+  var bwScale = {slim:0.82, average:1.0, athletic:0.95, fuller:1.15, heavy:1.35}[AV.body]||1.0;
+  if(bmiVal<18.5) bwScale=Math.min(bwScale,0.85);
+  if(bmiVal>=30)  bwScale=Math.max(bwScale,1.2);
+  if(bmiVal>=35)  bwScale=Math.max(bwScale,1.4);
+
+  var bodyW=Math.round(34*bwScale);
+  var shoulderW=Math.round(40*bwScale);
+
+  // Gender affects shoulder/hip ratio
+  var hipW = bodyW;
+  if(AV.gender==="female") hipW = Math.round(bodyW*1.08);
+  if(AV.gender==="male")   hipW = Math.round(bodyW*0.95);
+
+  var outfit = OUTFIT_COLORS[AV.outfit]||OUTFIT_COLORS.casual;
+  var skin = AV.skin;
+  var hairC = age>55 ? blend(AV.hairColor,"#c8c0b8",.6) : age>45 ? blend(AV.hairColor,"#c8c0b8",.25) : AV.hairColor;
+  var eyeC = AV.eyeColor;
+  var tired = hp<45;
+  var dy = hp>60?0:hp>35?3:6; // posture sag
+
+  // shadow
+  ctx.fillStyle="rgba(0,0,0,.25)";
+  ctx.beginPath();ctx.ellipse(cx,H-4,bodyW+12,5,0,0,Math.PI*2);ctx.fill();
+
+  // LEGS
+  var legW=Math.round(12*bwScale);
+  ctx.fillStyle=outfit.pants;
+  ctx.fillRect(cx-bodyW/2+2, 148+dy, legW, 46);
+  ctx.fillRect(cx+bodyW/2-legW-2, 148+dy, legW, 46);
+  // shoes
+  ctx.fillStyle=outfit.shoe;
+  ctx.fillRect(cx-bodyW/2-1, 191+dy, legW+5, 8);
+  ctx.fillRect(cx+bodyW/2-legW-5, 191+dy, legW+5, 8);
+
+  // TORSO
+  ctx.fillStyle=outfit.top;
+  ctx.beginPath();
+  ctx.moveTo(cx-shoulderW/2, 95+dy);
+  ctx.lineTo(cx+shoulderW/2, 95+dy);
+  ctx.lineTo(cx+hipW/2+2, 150+dy);
+  ctx.lineTo(cx-hipW/2-2, 150+dy);
+  ctx.closePath();ctx.fill();
+
+  // collar V
+  ctx.fillStyle=skin;
+  ctx.beginPath();ctx.moveTo(cx-10,95+dy);ctx.lineTo(cx,110+dy);ctx.lineTo(cx+10,95+dy);ctx.closePath();ctx.fill();
+
+  // outfit detail
+  if(AV.outfit==="business"){
+    // tie
+    ctx.fillStyle="#8a1a1a";
+    ctx.beginPath();ctx.moveTo(cx-4,108+dy);ctx.lineTo(cx+4,108+dy);ctx.lineTo(cx+3,130+dy);ctx.lineTo(cx,135+dy);ctx.lineTo(cx-3,130+dy);ctx.closePath();ctx.fill();
+  }else if(AV.outfit==="athletic"){
+    ctx.strokeStyle="rgba(255,255,255,.3)";ctx.lineWidth=6;
+    ctx.beginPath();ctx.moveTo(cx-shoulderW/2+4,112+dy);ctx.lineTo(cx+shoulderW/2-4,112+dy);ctx.stroke();
+  }else if(AV.outfit==="scrubs"){
+    ctx.fillStyle="rgba(255,255,255,.15)";
+    ctx.fillRect(cx-8,115+dy,16,16);
+    ctx.fillStyle=outfit.top;ctx.fillRect(cx-1,115+dy,2,16);ctx.fillRect(cx-8,123+dy,16,2);
+  }else if(AV.outfit==="outdoorsy"){
+    ctx.fillStyle="rgba(255,255,255,.1)";
+    for(var pi=0;pi<3;pi++){ctx.fillRect(cx-shoulderW/2+4+pi*12,105+dy,8,10);}
+  }else if(AV.outfit==="streetwear"){
+    ctx.fillStyle="rgba(255,255,255,.08)";
+    ctx.font="bold 9px sans-serif";ctx.textAlign="center";ctx.fillStyle="#ffffff22";
+    ctx.fillText("NYC",cx,122+dy);
+  }
+
+  // ARMS
+  var armW=Math.round(11*bwScale);
+  ctx.fillStyle=outfit.top;
+  ctx.fillRect(cx-shoulderW/2-armW, 95+dy, armW, 50);
+  ctx.fillRect(cx+shoulderW/2, 95+dy, armW, 50);
+  // hands
+  ctx.fillStyle=skin;
+  ctx.beginPath();ctx.ellipse(cx-shoulderW/2-armW/2,146+dy,armW/2+1,7,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(cx+shoulderW/2+armW/2,146+dy,armW/2+1,7,0,0,Math.PI*2);ctx.fill();
+
+  // NECK
+  ctx.fillStyle=skin;
+  ctx.fillRect(cx-7, 75+dy, 14, 22);
+
+  // HEAD
+  var headW=Math.round(22+bwScale*2);
+  var headH=26;
+  ctx.fillStyle=skin;
+  ctx.beginPath();ctx.ellipse(cx,56+dy,headW,headH,0,0,Math.PI*2);ctx.fill();
+
+  // ears
+  ctx.beginPath();ctx.ellipse(cx-headW+1,57+dy,5,7,0,0,Math.PI*2);ctx.fill();
+  ctx.beginPath();ctx.ellipse(cx+headW-1,57+dy,5,7,0,0,Math.PI*2);ctx.fill();
+
+  // earrings for female/nonbinary
+  if(AV.gender!=="male"){
+    ctx.fillStyle="#e8c060";
+    ctx.beginPath();ctx.arc(cx-headW+1,62+dy,2.5,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(cx+headW-1,62+dy,2.5,0,Math.PI*2);ctx.fill();
+  }
+
+  // HAIR
+  ctx.fillStyle=hairC;
+  if(AV.hair==="shaved"){
+    ctx.beginPath();ctx.ellipse(cx,38+dy,headW-2,10,0,Math.PI,Math.PI*2);ctx.fill();
+  }else if(AV.hair==="short"){
+    ctx.beginPath();ctx.ellipse(cx,34+dy,headW+2,18,0,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillRect(cx-headW,43+dy,10,14);ctx.fillRect(cx+headW-10,43+dy,10,14);
+  }else if(AV.hair==="medium"){
+    ctx.beginPath();ctx.ellipse(cx,32+dy,headW+3,20,0,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillRect(cx-headW-2,36+dy,12,32);ctx.fillRect(cx+headW-10,36+dy,12,32);
+  }else if(AV.hair==="long"){
+    ctx.beginPath();ctx.ellipse(cx,30+dy,headW+3,22,0,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillRect(cx-headW-3,34+dy,12,62);ctx.fillRect(cx+headW-9,34+dy,12,62);
+    // long hair curve
+    ctx.beginPath();ctx.moveTo(cx-headW-3,34+dy);ctx.quadraticCurveTo(cx-headW-10,80+dy,cx-headW,96+dy);ctx.lineTo(cx-headW+9,96+dy);ctx.lineTo(cx-headW+9,34+dy);ctx.closePath();ctx.fill();
+    ctx.beginPath();ctx.moveTo(cx+headW+3,34+dy);ctx.quadraticCurveTo(cx+headW+10,80+dy,cx+headW,96+dy);ctx.lineTo(cx+headW-9,96+dy);ctx.lineTo(cx+headW-9,34+dy);ctx.closePath();ctx.fill();
+  }else if(AV.hair==="curly"){
+    for(var ci=0;ci<7;ci++){
+      ctx.beginPath();ctx.arc(cx-headW+4+ci*10,32+Math.sin(ci*1.3)*5+dy,9,0,Math.PI*2);ctx.fill();
+    }
+    ctx.beginPath();ctx.ellipse(cx,34+dy,headW,12,0,Math.PI,Math.PI*2);ctx.fill();
+  }else if(AV.hair==="bun"){
+    ctx.beginPath();ctx.ellipse(cx,34+dy,headW+1,16,0,Math.PI,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(cx,23+dy,12,0,Math.PI*2);ctx.fill();
+    ctx.strokeStyle=blend(hairC,"#1a0a00",.2);ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.arc(cx,23+dy,7,-0.5,Math.PI+0.5);ctx.stroke();
+  }
+
+  // male pattern baldness at 50+
+  if(AV.gender==="male"&&age>=50&&AV.hair!=="shaved"){
+    ctx.fillStyle=skin;
+    ctx.beginPath();ctx.ellipse(cx,38+dy,headW*0.5,10,0,0,Math.PI*2);ctx.fill();
+  }
+
+  // EYEBROWS
+  var browC=blend(hairC,"#1a1209",.4);
+  ctx.strokeStyle=browC;
+  ctx.lineWidth=AV.gender==="female"?1.2:2;
+  var bt=hp<40?1.5:0;
+  ctx.beginPath();ctx.moveTo(cx-headW+8,48+dy+bt);ctx.lineTo(cx-6,46+dy);ctx.stroke();
+  ctx.beginPath();ctx.moveTo(cx+6,46+dy);ctx.lineTo(cx+headW-8,48+dy+bt);ctx.stroke();
+
+  // EYES
+  ctx.fillStyle=eyeC;
+  if(!tired){
+    var ew=3.5,eh=AV.gender==="female"?4.5:3.8;
+    ctx.beginPath();ctx.ellipse(cx-11,56+dy,ew,eh,0,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.ellipse(cx+11,56+dy,ew,eh,0,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle="#fff";
+    ctx.beginPath();ctx.arc(cx-10,55+dy,1.2,0,Math.PI*2);ctx.fill();
+    ctx.beginPath();ctx.arc(cx+12,55+dy,1.2,0,Math.PI*2);ctx.fill();
+    // female lashes
+    if(AV.gender==="female"){
+      ctx.strokeStyle="#1a1209";ctx.lineWidth=1.2;
+      [-3,-1,1,3].forEach(function(dx){
+        ctx.beginPath();ctx.moveTo(cx-11+dx,53+dy);ctx.lineTo(cx-11+dx+dx*.3,50+dy);ctx.stroke();
+        ctx.beginPath();ctx.moveTo(cx+11+dx,53+dy);ctx.lineTo(cx+11+dx+dx*.3,50+dy);ctx.stroke();
+      });
+    }
+  }else{
+    ctx.strokeStyle=eyeC;ctx.lineWidth=1.8;
+    ctx.beginPath();ctx.moveTo(cx-14,56+dy);ctx.lineTo(cx-8,54+dy);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+8,54+dy);ctx.lineTo(cx+14,56+dy);ctx.stroke();
+  }
+
+  // NOSE
+  ctx.strokeStyle="rgba(0,0,0,.12)";ctx.lineWidth=1.5;
+  ctx.beginPath();ctx.moveTo(cx,56+dy);ctx.lineTo(cx-4,65+dy);ctx.lineTo(cx+4,65+dy);ctx.stroke();
+
+  // MOUTH
+  ctx.strokeStyle=blend(skin,"#1a1209",.35);ctx.lineWidth=2.2;
+  if(hp>60){ctx.beginPath();ctx.arc(cx,70+dy,6,.2,Math.PI-.2);ctx.stroke();}
+  else if(hp>35){ctx.beginPath();ctx.moveTo(cx-5,71+dy);ctx.lineTo(cx+5,71+dy);ctx.stroke();}
+  else{ctx.beginPath();ctx.arc(cx,75+dy,6,Math.PI+.2,2*Math.PI-.2,true);ctx.stroke();}
+
+  // WRINKLES at age 50+
+  if(age>=50){
+    ctx.strokeStyle="rgba(0,0,0,.08)";ctx.lineWidth=1;
+    ctx.beginPath();ctx.moveTo(cx-13,62+dy);ctx.quadraticCurveTo(cx-15,65+dy,cx-13,68+dy);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx+13,62+dy);ctx.quadraticCurveTo(cx+15,65+dy,cx+13,68+dy);ctx.stroke();
+  }
+  if(age>=60){
+    ctx.beginPath();ctx.moveTo(cx-5,70+dy);ctx.quadraticCurveTo(cx,73+dy,cx+5,70+dy);ctx.stroke();
+  }
+
+  // ACCESSORIES
+  if(AV.acc==="glasses"||AV.acc==="sunglasses"){
+    var lensC=AV.acc==="sunglasses"?"rgba(0,0,0,.7)":"rgba(180,220,255,.3)";
+    ctx.strokeStyle="#8a7a5a";ctx.lineWidth=1.5;
+    ctx.beginPath();ctx.rect(cx-16,52+dy,12,9);ctx.stroke();
+    ctx.beginPath();ctx.rect(cx+4,52+dy,12,9);ctx.stroke();
+    ctx.beginPath();ctx.moveTo(cx-4,56+dy);ctx.lineTo(cx+4,56+dy);ctx.stroke();
+    ctx.fillStyle=lensC;ctx.fillRect(cx-16,52+dy,12,9);ctx.fillRect(cx+4,52+dy,12,9);
+  }
+  if(AV.acc==="cowboy"){
+    ctx.fillStyle="#5a3a10";
+    ctx.fillRect(cx-headW-6,36+dy,headW*2+12,6);
+    ctx.beginPath();ctx.moveTo(cx-headW+2,36+dy);ctx.lineTo(cx-headW+4,16+dy);ctx.lineTo(cx+headW-4,16+dy);ctx.lineTo(cx+headW-2,36+dy);ctx.fill();
+    ctx.fillStyle="#4a2a08";ctx.fillRect(cx-headW+2,34+dy,headW*2-4,5);
+  }else if(AV.acc==="beanie"){
+    ctx.fillStyle=blend(AV.hairColor,"#2a2a3a",.5);
+    ctx.beginPath();ctx.ellipse(cx,30+dy,headW+3,22,0,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillRect(cx-headW-3,36+dy,headW*2+6,10);
+    ctx.strokeStyle=blend(AV.hairColor,"#1a1a2a",.4);ctx.lineWidth=3;
+    ctx.beginPath();ctx.moveTo(cx-headW-3,42+dy);ctx.lineTo(cx+headW+3,42+dy);ctx.stroke();
+  }else if(AV.acc==="cap"){
+    ctx.fillStyle="#1a2a1a";
+    ctx.beginPath();ctx.ellipse(cx,36+dy,headW+2,14,0,Math.PI,Math.PI*2);ctx.fill();
+    ctx.fillRect(cx-headW-2,40+dy,headW*2+4,6);
+    // brim
+    ctx.beginPath();ctx.ellipse(cx,46+dy,headW+8,5,0,0,Math.PI);ctx.fill();
+  }
+
+  // tobacco indicator
+  if(C.tobacco==="current"){
+    ctx.fillStyle="#f0f0d0";ctx.fillRect(cx+shoulderW/2+armW-2,142+dy,12,3);
+    ctx.fillStyle="#ff6030";ctx.beginPath();ctx.arc(cx+shoulderW/2+armW+11,143+dy,2,0,Math.PI*2);ctx.fill();
+  }
+
+  // health aura
+  if(hp>80&&window.G){
+    ctx.strokeStyle="rgba(40,200,40,.12)";ctx.lineWidth=6;
+    ctx.beginPath();ctx.ellipse(cx,120+dy,shoulderW+22,70,0,0,Math.PI*2);ctx.stroke();
+  }
+}
+
+function blend(h1,h2,t){
+  function hx(h){ return[parseInt(h.slice(1,3),16),parseInt(h.slice(3,5),16),parseInt(h.slice(5,7),16)];}
+  var a=hx(h1),b=hx(h2);
+  return "#"+a.map(function(v,i){return ("0"+Math.round(v+(b[i]-v)*t).toString(16)).slice(-2);}).join("");
+}
+
+// ── SWATCH BUILDERS ──────────────────────────────────
+function buildSwatches(containerId, colors, key, redraw){
+  var row=document.getElementById(containerId);
+  if(!row)return;
+  colors.forEach(function(c,i){
+    var d=document.createElement("div");
+    d.className="swatch"+(i===0?" on":"");
+    d.style.background=c;
+    d.onclick=function(){
+      row.querySelectorAll(".swatch").forEach(function(s){s.classList.remove("on");});
+      d.classList.add("on");
+      AV[key]=c;
+      if(redraw)drawAv("av-cv");
+    };
+    row.appendChild(d);
+  });
+}
+buildSwatches("sw-skin", SKINS, "skin", true);
+buildSwatches("sw-hair", HAIR_COLORS, "hairColor", true);
+buildSwatches("sw-eye", EYE_COLORS, "eyeColor", true);
+
+// ── CHIP GROUPS ───────────────────────────────────────
+function wireChips(rowId, avKey, redraw){
+  var row=document.getElementById(rowId);
+  if(!row)return;
+  row.querySelectorAll(".opt-chip").forEach(function(chip){
+    chip.addEventListener("click",function(){
+      row.querySelectorAll(".opt-chip").forEach(function(c){c.classList.remove("on");});
+      chip.classList.add("on");
+      AV[avKey]=chip.dataset.v;
+      if(redraw)drawAv("av-cv");
+    });
+  });
+}
+wireChips("g-gender","gender",true);
+wireChips("g-hair","hair",true);
+wireChips("g-body","body",true);
+wireChips("g-outfit","outfit",true);
+wireChips("g-acc","acc",true);
+
+// lifestyle chips (not on AV but on C)
+["diet","exercise","sleep","stress","tobacco","job"].forEach(function(k){
+  var row=document.getElementById("g-"+k);
+  if(!row)return;
+  row.querySelectorAll(".opt-chip").forEach(function(chip){
+    chip.addEventListener("click",function(){
+      row.querySelectorAll(".opt-chip").forEach(function(c){c.classList.remove("on");});
+      chip.classList.add("on");
+      C[k]=chip.dataset.v;
+      if(k==="job")renderPlanCards();
+    });
+  });
+});
+
+var C={diet:"good",exercise:"active",sleep:"good",stress:"low",tobacco:"none",job:"employer",name:"",salary:55000,planTier:"balanced"};
+var G={};
+
+// ── FINANCIAL POSITION ────────────────────────────────
+function fmtSalary(v){
+  v=parseInt(v);
+  return "$"+Math.round(v/1000)+"k/yr";
+}
+
+// Three coverage tiers per employment type. Cheaper premium == higher
+// deductible/OOP exposure when something actually goes wrong.
+var PLAN_TIERS={
+  employer:[
+    {tier:"cheap",   name:"Employer HDHP",     ded:3000,oop:6500,er:250,rx:35,prem:90, net:"HDHP", blurb:"Low premium, high risk if something happens."},
+    {tier:"balanced",name:"Employer PPO",      ded:1500,oop:4000,er:200,rx:20,prem:180,net:"PPO",  blurb:"Solid middle ground most people pick."},
+    {tier:"premium", name:"Employer PPO Plus", ded:500, oop:2500,er:100,rx:10,prem:320,net:"PPO",  blurb:"Highest premium, lowest exposure to a bad year."}
+  ],
+  gig:[
+    {tier:"cheap",   name:"ACA Bronze", ded:7000,oop:9200,er:500,rx:60,prem:120,net:"PPO", blurb:"Cheapest sticker price, worst safety net."},
+    {tier:"balanced",name:"ACA Silver", ded:5000,oop:8700,er:350,rx:45,prem:195,net:"PPO", blurb:"The default most gig workers land on."},
+    {tier:"premium", name:"ACA Gold",   ded:2000,oop:6000,er:200,rx:25,prem:340,net:"PPO", blurb:"Pay more monthly, keep more in a crisis."}
+  ],
+  student:[
+    {tier:"cheap",   name:"Student Basic", ded:2000,oop:6000,er:150,rx:30,prem:90, net:"HMO", blurb:"Fine until something big happens."},
+    {tier:"balanced",name:"Student Plan",  ded:1000,oop:4000,er:100,rx:20,prem:150,net:"HMO", blurb:"Balanced coverage for campus life."},
+    {tier:"premium", name:"Student Plus",  ded:250, oop:2000,er:50, rx:10,prem:260,net:"HMO", blurb:"Barely notice a bill even in a bad year."}
+  ]
+};
+
+function renderPlanCards(){
+  var wrap=document.getElementById("plan-cards");
+  if(!wrap)return;
+  var tiers=PLAN_TIERS[C.job]||PLAN_TIERS.employer;
+  if(!tiers.some(function(t){return t.tier===C.planTier;}))C.planTier="balanced";
+  wrap.innerHTML="";
+  tiers.forEach(function(p){
+    var card=document.createElement("div");
+    card.className="plan-card"+(p.tier===C.planTier?" on":"");
+    var tagCls=p.tier==="cheap"?"cheap":p.tier==="premium"?"premium":"balanced";
+    card.innerHTML=
+      "<div class='plan-name'>"+p.name+"<span class='plan-tag "+tagCls+"'>"+p.tier.toUpperCase()+"</span></div>"+
+      "<div class='plan-grid'>"+
+        "<div>Deductible: <b>$"+p.ded.toLocaleString()+"</b></div>"+
+        "<div>OOP Max: <b>$"+p.oop.toLocaleString()+"</b></div>"+
+        "<div>ER Copay: <b>$"+p.er+"</b></div>"+
+        "<div>Rx Copay: <b>$"+p.rx+"</b></div>"+
+      "</div>"+
+      "<div class='plan-prem'>$"+p.prem+"/mo premium <span style='color:#8a7a5a;font-weight:400'>-- "+p.blurb+"</span></div>";
+    card.addEventListener("click",function(){
+      C.planTier=p.tier;
+      wrap.querySelectorAll(".plan-card").forEach(function(c){c.classList.remove("on");});
+      card.classList.add("on");
+    });
+    wrap.appendChild(card);
+  });
+}
+renderPlanCards();
+
+function initG(){
+  var startCash=Math.max(600,Math.round(C.salary/12*0.75));
+  G={hp:80,en:70,sh:50,sv:startCash,age:AV.age,miles:0,xp:0,lv:1,
+    know:[],log:[],party:[],done:false,plan:null,eventIdx:0,
+    salary:C.salary,monthlyNet:0};
+  var b=bmi();
+  if(C.diet==="poor")G.hp-=10;
+  if(C.exercise==="active"){G.hp+=5;G.en+=10;G.sh+=8;}
+  if(C.exercise==="sedentary"){G.hp-=8;G.en-=10;}
+  if(C.sleep==="good")G.en+=10;
+  if(C.sleep==="poor"){G.hp-=8;G.en-=15;}
+  if(C.stress==="high"){G.hp-=8;G.sh-=12;}
+  if(C.tobacco==="current"){G.hp-=12;G.sh-=15;}
+  if(b>=30)G.hp-=8;
+  if(b>=35)G.hp-=8;
+  if(b<18.5)G.hp-=5;
+  if(AV.age>35)G.hp-=Math.round((AV.age-35)/3);
+  G.hp=Math.max(20,Math.min(100,G.hp));
+  G.en=Math.max(20,Math.min(100,G.en));
+  G.sh=Math.max(10,Math.min(100,G.sh));
+  G.plan=makePlan();
+  G.monthlyNet=Math.round(G.salary/12*0.15-G.plan.prem);
+  G.party=[{name:AV.name||"You",icon:"🧑",hp:G.hp,role:"You"}];
+  G.totalMiles=1200-Math.round((AV.age-22)*20);
+}
+function makePlan(){
+  var tiers=PLAN_TIERS[C.job]||PLAN_TIERS.employer;
+  var chosen=null;
+  for(var i=0;i<tiers.length;i++){if(tiers[i].tier===C.planTier){chosen=tiers[i];break;}}
+  if(!chosen)chosen=tiers[1];
+  return{name:chosen.name,ded:chosen.ded,oop:chosen.oop,er:chosen.er,rx:chosen.rx,prem:chosen.prem,net:chosen.net,tier:chosen.tier};
+}
+
+// ── TRAIL ─────────────────────────────────────────────
+var WAYPOINTS=[
+  {mi:0,   name:"First Job",      icon:"💼"},
+  {mi:150, name:"The First Bill", icon:"📬"},
+  {mi:300, name:"The Injury",     icon:"🤕"},
+  {mi:450, name:"The Layoff",     icon:"📋"},
+  {mi:550, name:"New Beginnings", icon:"💍"},
+  {mi:650, name:"The Diagnosis",  icon:"🩺"},
+  {mi:750, name:"Family Crisis",  icon:"👨‍👩‍👧"},
+  {mi:900, name:"The Big Bill",   icon:"💸"},
+  {mi:1050,name:"Pre-Retirement", icon:"🏡"},
+  {mi:1200,name:"The Other Side", icon:"🌅"},
+];
+function drawTrail(){
+  var cv=document.getElementById("trail-cv");if(!cv)return;
+  var W=cv.offsetWidth||375;cv.width=W;cv.height=110;
+  var ctx=cv.getContext("2d");
+  var gr=ctx.createLinearGradient(0,0,0,60);
+  gr.addColorStop(0,"#0a0c18");gr.addColorStop(1,"#1a2010");
+  ctx.fillStyle=gr;ctx.fillRect(0,0,W,60);
+  ctx.fillStyle="#1a1408";ctx.fillRect(0,58,W,52);
+  ctx.fillStyle="#2a1e08";ctx.fillRect(0,58,W,6);
+  ctx.fillStyle="rgba(255,255,220,.6)";
+  [[20,12],[80,8],[140,15],[200,6],[260,11],[320,8],[W-40,14],[W-80,7]].forEach(function(s){
+    ctx.beginPath();ctx.arc(s[0],s[1],1,0,Math.PI*2);ctx.fill();
+  });
+  ctx.strokeStyle="#3a2e18";ctx.lineWidth=6;
+  ctx.beginPath();ctx.moveTo(0,72);ctx.lineTo(W,72);ctx.stroke();
+  ctx.strokeStyle="#4a3e28";ctx.lineWidth=2;ctx.setLineDash([12,8]);
+  ctx.beginPath();ctx.moveTo(0,72);ctx.lineTo(W,72);ctx.stroke();
+  ctx.setLineDash([]);
+  WAYPOINTS.forEach(function(wp){
+    var x=Math.round((wp.mi/1200)*W);
+    var passed=G.miles>=wp.mi;
+    ctx.fillStyle=passed?"#e8c060":"#3a2e18";
+    ctx.beginPath();ctx.arc(x,72,6,0,Math.PI*2);ctx.fill();
+    ctx.font="12px serif";ctx.textAlign="center";
+    ctx.fillText(wp.icon,x,62);
+    if(passed){
+      ctx.fillStyle="#6a5a3a";ctx.font="bold 8px Nunito,sans-serif";
+      ctx.fillText(wp.name.split(" ")[0],x,90);
+    }
+  });
+  var tx=Math.round((G.miles/1200)*W);
+  ctx.font="18px serif";ctx.textAlign="center";
+  ctx.fillText("🤠",tx,68);
+  ctx.fillStyle="#1a1408";ctx.fillRect(0,98,W,12);
+  ctx.fillStyle="#c8900a";ctx.fillRect(0,98,Math.round((G.miles/1200)*W),12);
+  ctx.fillStyle="#6a5a3a";ctx.font="bold 8px Nunito,sans-serif";ctx.textAlign="center";
+  ctx.fillText("Mile "+G.miles+" of 1,200",W/2,107);
+}
+
+// ── HUD ───────────────────────────────────────────────
+function refreshHUD(){
+  var hp=document.getElementById("s-hp");
+  if(hp){hp.textContent=Math.round(G.hp);hp.style.color=G.hp>60?"#40c840":G.hp>35?"#e8c060":"#e84040";}
+  var sv=document.getElementById("s-sv");
+  if(sv){var v=G.sv;sv.textContent=v>=1000?"$"+(v/1000).toFixed(1)+"k":"$"+Math.max(0,Math.round(v));sv.style.color=v>2000?"#40c840":v>500?"#e8c060":"#e84040";}
+  document.getElementById("s-age").textContent=G.age;
+  document.getElementById("s-mi").textContent=G.miles;
+  var pbadge=document.getElementById("plan-badge");
+  if(pbadge&&G.plan){
+    var netCls=G.monthlyNet>=0?"pos":"neg";
+    var netTxt=(G.monthlyNet>=0?"+":"-")+"$"+Math.abs(G.monthlyNet)+"/mo";
+    pbadge.innerHTML="<b>"+G.plan.name+"</b> -- $"+G.plan.prem+"/mo premium -- <span class='"+netCls+"'>"+netTxt+"</span> net";
+  }
+  var pb=document.getElementById("party-bar");
+  if(pb){pb.innerHTML="";G.party.forEach(function(m){var d=document.createElement("div");d.className="party-member";var hc=m.hp>60?"#40c840":m.hp>35?"#e8c060":"#e84040";d.innerHTML="<div class='pm-icon'>"+m.icon+"</div><div class='pm-name'>"+m.name+"</div><div class='pm-hp' style='color:"+hc+"'>"+Math.round(m.hp)+"</div>";pb.appendChild(d);});}
+}
+
+// ── KNOWLEDGE ─────────────────────────────────────────
+function addKnow(item){
+  if(!item)return;
+  for(var i=0;i<G.know.length;i++){if(G.know[i].tag===item.tag)return;}
+  G.know.push(item);renderKnowBar();toast("Learned: "+item.tag);
+}
+function renderKnowBar(){
+  var bar=document.getElementById("know-bar"),items=document.getElementById("know-items");
+  if(!bar||!items)return;
+  if(!G.know.length){bar.style.display="none";return;}
+  bar.style.display="block";items.innerHTML="";
+  G.know.forEach(function(k){
+    var pill=document.createElement("div");
+    pill.className="know-pill "+k.type;
+    pill.textContent=k.tag;
+    pill.onclick=function(){
+      var box=document.getElementById("kpopbox");
+      box.innerHTML="<div class='kpop-tag'>"+k.type.toUpperCase()+" KNOWLEDGE</div><div class='kpop-title'>"+k.tag+"</div><div class='kpop-txt'>"+k.text+"</div><br><button class='btn btn-ghost' onclick=\"document.getElementById('kpop').classList.remove('on')\">Close</button>";
+      document.getElementById("kpop").classList.add("on");
+    };
+    items.appendChild(pill);
+  });
+}
+document.getElementById("kpop").addEventListener("click",function(e){if(e.target===this)this.classList.remove("on");});
+
+// ── LOG ───────────────────────────────────────────────
+function addLog(msg,cls){G.log.unshift({msg:msg,cls:cls||""});renderLog();}
+function renderLog(){
+  var el=document.getElementById("trail-log");if(!el)return;
+  el.innerHTML="";
+  if(!G.done){
+    var nb=document.createElement("button");nb.className="btn btn-y";
+    nb.style.cssText="margin:0 0 16px 0;font-size:15px";
+    nb.textContent="Continue...";nb.onclick=nextEvent;
+    el.appendChild(nb);
+  }
+  G.log.slice(0,12).forEach(function(l){
+    var d=document.createElement("div");d.className="log-entry "+(l.cls||"");
+    d.innerHTML=l.msg;el.appendChild(d);
+  });
+}
+
+// ── TOAST ─────────────────────────────────────────────
+function toast(msg){
+  var t=document.getElementById("toast");t.textContent=msg;t.classList.add("show");
+  clearTimeout(t._t);t._t=setTimeout(function(){t.classList.remove("show");},2200);
+}
+
+// ── NPCS ──────────────────────────────────────────────
+var NPCS={
+  maya:  {name:"Maya",    role:"HR Rep",       em:"👩‍💼",col:"#b090e0"},
+  chen:  {name:"Dr. Chen",role:"Your Doctor",  em:"👨‍⚕️",col:"#60a0d0"},
+  carlos:{name:"Carlos",  role:"Pharmacist",   em:"💊",  col:"#60b060"},
+  jordan:{name:"Jordan",  role:"Gym Friend",   em:"🏋️",col:"#e8a020"},
+  sam:   {name:"Sam",     role:"Billing Dept", em:"🧾",  col:"#c06040"},
+  priya: {name:"Priya",   role:"Insurance Rep",em:"📋",  col:"#6090c0"}
+};
+
+// ── MODAL ─────────────────────────────────────────────
+var modalLocked=false;
+function openModal(data){
+  modalLocked=false;
+  var npc=data.npc?NPCS[data.npc]:null;
+  var html="<div class='m-icon'>"+(data.icon||"?")+"</div>";
+  html+="<div class='m-season'>"+(data.season||"LIFE GOES ON")+"</div>";
+  html+="<div class='m-title'>"+data.title+"</div>";
+  if(npc)html+="<div class='m-npc'>"+npc.em+" <strong style='color:"+npc.col+"'>"+npc.name+"</strong> -- "+npc.role+"</div>";
+  if(data.explain)html+="<div class='m-explain'>"+data.explain+"</div>";
+  html+="<div class='m-body'>"+data.body.replace(/\n/g,"<br>")+"</div>";
+  if(data.learn)html+="<div class='m-learn'><div class='m-learn-lbl'>KNOWLEDGE UNLOCKED</div><div class='m-learn-txt'><strong>["+data.learn.tag+"]</strong> "+data.learn.text+"</div></div>";
+  html+="<div class='m-choices'>";
+  for(var i=0;i<data.choices.length;i++){
+    var ch=data.choices[i];
+    var meta="";
+    if(ch.xp)meta+="<span class='ch-xp'>+"+ch.xp+" XP</span> ";
+    if(ch.cost)meta+="<span class='ch-cost'>-$"+ch.cost+"</span> ";
+    if(ch.gain)meta+="<span class='ch-gain'>+$"+ch.gain+"</span>";
+    html+="<button class='m-ch"+(ch.risk?" risk":"")+"' data-i='"+i+"'>"+ch.t;
+    if(meta)html+="<span class='ch-meta'>"+meta+"</span>";
+    html+="</button>";
+  }
+  html+="</div>";
+  var mbox=document.getElementById("mbox");
+  mbox.innerHTML=html;mbox.scrollTop=0;
+  document.getElementById("modal").classList.add("on");
+  if(data.learn)setTimeout(function(){addKnow(data.learn);},600);
+  mbox.querySelectorAll(".m-ch").forEach(function(btn){
+    btn.addEventListener("click",function(){
+      if(modalLocked)return;modalLocked=true;
+      mbox.querySelectorAll(".m-ch").forEach(function(b){b.disabled=true;});
+      var ch=data.choices[parseInt(btn.dataset.i)];
+      document.getElementById("modal").classList.remove("on");
+      if(ch.cb)ch.cb();
+      var milesGained=ch.miles||80;
+      G.miles+=milesGained;
+      G.age=AV.age+Math.floor(G.miles/30);
+      if(G.age>65)G.age=65;
+      if(G.miles>1200)G.miles=1200;
+      // Time passes: income minus premium (and everything else fixed costs
+      // imply) nets out here. A richer plan means a bigger monthly hit now,
+      // but the events above already cost less when they land -- that is
+      // the whole trade-off.
+      var monthsElapsed=(milesGained/30)*12;
+      G.monthlyNet=Math.round(G.salary/12*0.15-G.plan.prem);
+      G.sv=Math.round(G.sv+G.monthlyNet*monthsElapsed);
+      refreshHUD();drawTrail();checkWaypoint();
+      if(G.hp<=0){endGame("dead");return;}
+      if(G.sv<-20000){endGame("broke");return;}
+      if(G.miles>=1200){endGame("complete");return;}
+    });
+  });
+}
+
+function checkWaypoint(){
+  WAYPOINTS.forEach(function(wp){
+    if(Math.abs(G.miles-wp.mi)<85&&!wp._shown){
+      wp._shown=true;
+      var banner=document.createElement("div");banner.className="wp-banner";
+      banner.innerHTML="<div class='wp-icon'>"+wp.icon+"</div><div class='wp-name'>"+wp.name+"</div><div class='wp-sub'>Mile "+wp.mi+"</div>";
+      var log=document.getElementById("trail-log");
+      if(log&&log.children.length>0)log.insertBefore(banner,log.children[1]||log.firstChild);
+      toast("Waypoint: "+wp.name);
+    }
+  });
+}
+
+// ── EVENTS ────────────────────────────────────────────
+var EVENTS=[];
+
+EVENTS.push({id:"e_firstjob",icon:"💼",season:"MILE 0 - FIRST JOB",title:"The Benefits Packet",npc:"maya",
+explain:"<strong>What you need to know first:</strong> When you start a new job, you have a limited window to choose your health insurance plan. Miss it and you wait until November open enrollment. This is not optional.",
+body:"Maya drops a thick folder on your desk. It lands like a brick.\n\n'You have until Friday to pick a health plan,' she says cheerfully.\n\n'Any questions?'\n\nYou have so many questions.",
+learn:{tag:"You Must Choose a Plan",type:"ins",text:"Employer health insurance enrollment is time-limited. Miss the window and you wait until open enrollment in November or a qualifying life event. You cannot opt in later just because you want to."},
+choices:[
+  {t:"Ask Maya to explain the plans",xp:15,miles:80,cb:function(){
+    G.sh+=5;
+    addLog("<strong>Maya explains:</strong> PPO gives you any doctor. HMO is cheaper but you need referrals. Your deductible is what you pay first. Your OOP max is the MOST you will pay in one year. After that: insurance covers everything.","learn");
+    addLog("You chose the Employer PPO. Premium: $180/month. Deductible: $1,500. OOP Max: $4,000.","good");
+    addKnow({tag:"PPO vs HMO",type:"ins",text:"PPO = any doctor, no referrals, higher premium. HMO = cheaper, in-network only, referrals required. Know your network before scheduling any specialist."});
+    addKnow({tag:"Deductible and OOP Max",type:"ins",text:"Deductible = what you pay first each year. OOP Max = the most you will ever pay in one year. After OOP Max, insurance covers 100%. Both reset every January 1st."});
+  }},
+  {t:"Just pick the cheapest plan",xp:2,miles:80,risk:true,cb:function(){
+    G.sh-=15;
+    addLog("<strong>You picked Bronze.</strong> $80/month sounds smart. Until: $5,000 deductible. 40% coinsurance. One ER visit costs you $3,000 before insurance helps at all.","bad");
+    addKnow({tag:"Low Premium Risk",type:"ins",text:"Low monthly premiums mean high deductibles. You bet on staying healthy. Most people make this bet and lose it exactly once."});
+  }}
+]});
+
+EVENTS.push({id:"e_firstbill",icon:"📬",season:"MILE 150 - THE FIRST BILL",title:"You Have Got Mail",npc:"priya",
+explain:"<strong>Before Priya picks up:</strong> You have insurance. You showed your card. The bill should not exist. But it does. Your deductible means you pay the first chunk of medical costs yourself every year before insurance kicks in.",
+body:"A letter from your insurance company.\n\nPatient responsibility: $280.\n\nBut you have insurance. You showed them your card. What is happening?",
+learn:{tag:"Deductible in Real Life",type:"ins",text:"Until you meet your deductible, you pay most medical bills in full at the negotiated rate. Preventive care (annual physical, vaccines, screenings) is ALWAYS $0 under ACA law, even before the deductible."},
+choices:[
+  {t:"Call Priya. Ask why.",xp:20,miles:90,cb:function(){
+    addLog("<strong>Priya explains:</strong> Your deductible is $1,500. You have paid $280 toward it. Until you hit $1,500, most bills are yours. After that, insurance splits costs. After $4,000 total, they cover everything.","learn");
+    addLog("Your annual physical is completely FREE. ACA law. You have been avoiding it for nothing.","good");G.sh+=5;
+  }},
+  {t:"Ignore it. Deal with it later.",xp:0,miles:90,risk:true,cb:function(){
+    G.sv-=400;G.sh-=10;
+    addLog("<strong>90 days later:</strong> COLLECTIONS NOTICE. $280 became $380 with fees.","bad");
+  }},
+  {t:"Dispute it. Something is wrong.",xp:5,miles:90,cb:function(){
+    G.sv-=280;addLog("You disputed. Priya reviewed. Bill is correct. Lesson learned at $280. Some people learn it at $28,000.","learn");
+  }}
+]});
+
+EVENTS.push({id:"e_gym",icon:"🏋️",season:"AGE 24",title:"Jordan's Invitation",npc:"jordan",explain:null,
+body:"Jordan from work: 'Gym at 6am tomorrow?'\n\nIt is 11pm and you are eating leftover pizza.",
+learn:{tag:"Employer Wellness Perks",type:"money",text:"Most large employers offer gym reimbursements, wellness credits, and premium discounts for healthy behaviors. Ask HR what wellness benefits exist on your first week."},
+choices:[
+  {t:"Set the alarm. Go.",xp:15,miles:80,cb:function(){
+    G.hp+=8;G.en+=10;
+    addLog("<strong>You go.</strong> Awful for two weeks. Then it is not. Employer pays $40/month gym reimbursement. You claim it. $480 a year you did not know existed.","good");
+    G.sv+=480;
+  }},
+  {t:"Maybe next time.",xp:0,miles:80,risk:true,cb:function(){G.hp-=5;G.en-=8;addLog("Pizza. Couch. Life does not pause for next week.","bad");}}
+]});
+
+EVENTS.push({id:"e_sleep",icon:"😴",season:"AGE 25",title:"The 1am Decision",npc:null,
+explain:"<strong>What your doctor would tell you:</strong> Chronic short sleep doubles cardiovascular risk, suppresses immunity, and impairs judgment similarly to being legally drunk. It is 1am.",
+body:"Work has been brutal. You need to be up at 6:30.\n\nPhone. One more scroll. One more episode.",
+learn:{tag:"Sleep Is Not Optional",type:"health",text:"7-9 hours of sleep reduces cardiovascular disease risk by 48%, obesity by 55%, depression by 40%. Your body repairs itself during sleep. This compounds over years."},
+choices:[
+  {t:"Phone down. Protect your sleep.",xp:15,miles:70,cb:function(){G.hp+=8;G.en+=12;addLog("You slept 8 hours. Sleep is infrastructure, not luxury.","good");}},
+  {t:"One more episode. It is fine.",xp:0,miles:70,risk:true,cb:function(){G.hp-=6;G.en-=12;addLog("5 hours. You feel like sandpaper. Your immune system starts negotiating with your bad choices.","bad");}}
+]});
+
+EVENTS.push({id:"e_injury",icon:"🤕",season:"MILE 300 - THE INJURY",title:"Down You Go",npc:null,
+explain:"<strong>Know before you go:</strong> ER costs average $2,200 for a non-emergency visit. Urgent care treats the same conditions for 60-80% less. Choosing wrong costs real money.",
+body:"Saturday morning run. Your knee makes a sound it has never made before.\n\nBy Monday: swollen, painful, not walking normally.",
+learn:{tag:"ER vs Urgent Care vs Doctor",type:"ins",text:"ER = true emergencies only. Average: $2,200 before insurance. Urgent care = same-day non-emergencies, 60-80% cheaper. Primary care = routine and referrals. Knowing which to use saves thousands per year."},
+choices:[
+  {t:"Urgent care. Not an emergency.",xp:20,miles:100,cb:function(){
+    var cost=Math.round(G.plan.er*.3);G.sv-=cost;G.hp+=10;
+    addLog("<strong>Urgent care.</strong> Sprained, not torn. $"+cost+" copay. Back on your feet in 3 weeks.","good");
+  }},
+  {t:"Go to the ER. This is serious.",xp:5,miles:100,risk:true,cb:function(){
+    G.sv-=G.plan.er;G.hp+=10;
+    addLog("<strong>ER visit.</strong> 4-hour wait. Same diagnosis. Bill: $"+G.plan.er+". 'Try urgent care next time.'","bad");
+  }},
+  {t:"Walk it off. Doctors are expensive.",xp:0,miles:100,risk:true,cb:function(){
+    G.hp-=15;G.sv-=3000;addLog("<strong>Bad call.</strong> Partial tear becomes full tear. Surgery: $8,400.","bad");
+  }}
+]});
+
+EVENTS.push({id:"e_pharmacy",icon:"💊",season:"AGE 27",title:"The $142 Prescription",npc:"carlos",
+explain:"<strong>Before you pay:</strong> Brand-name and generic drugs with the same active ingredient are FDA-certified bioequivalent. The same drug. Generic versions cost 80-90% less. Always ask.",
+body:"Post-surgery prescription. The pharmacist rings it up: $142.\n\nYou have insurance.",
+learn:{tag:"Generic Drugs and GoodRx",type:"money",text:"FDA-approved generic drugs are bioequivalent to brand-name drugs. Same drug, 80-90% less cost. GoodRx is a free card that cuts costs 20-80% at most pharmacies. No enrollment. Sometimes cheaper than using insurance."},
+choices:[
+  {t:"Ask Carlos if there is a cheaper option.",xp:20,miles:70,cb:function(){
+    G.sv-=22;addLog("<strong>Carlos:</strong> 'The generic is $12. Same drug.' GoodRx card. Total: $22 instead of $142. $120 saved by asking one question.","good");
+  }},
+  {t:"Just pay it.",xp:0,miles:70,cb:function(){G.sv-=142;addLog("You pay $142. The generic was $12. Carlos tried to make eye contact. You missed it.","bad");}}
+]});
+
+EVENTS.push({id:"e_checkup",icon:"🩺",season:"AGE 28",title:"The Physical You Keep Skipping",npc:"chen",
+explain:"<strong>ACA law:</strong> Annual wellness visits are $0 copay under your plan, even before your deductible. Free by federal law.",
+body:"Dr. Chen's office has called three times.\n\n'Your annual physical is overdue. And it is free.'\n\nYou keep meaning to go.",
+learn:{tag:"ACA Preventive Care is Always Free",type:"ins",text:"ACA law requires all non-grandfathered health plans to cover preventive services at zero cost even before your deductible. Annual physical, blood pressure, cholesterol, diabetes screening, depression screening, cancer screenings, vaccines. Free. Every year."},
+choices:[
+  {t:"Go. It is free. What is the excuse?",xp:25,miles:80,cb:function(){
+    G.hp+=12;G.sh+=8;
+    var bmiV=bmi();
+    var bmiNote=bmiV>=30?" Dr. Chen notes your BMI and recommends the free Diabetes Prevention Program.":bmiV>=25?" Dr. Chen recommends some lifestyle adjustments.":"";
+    addLog("<strong>Dr. Chen flags early signals.</strong> Caught now: free to reverse. Caught at 45: $16,750/year to manage."+bmiNote,"good");
+    addKnow({tag:"Catch It Early",type:"health",text:"Free annual screenings catch conditions when they cost almost nothing to address. Pre-diabetes reversal costs almost nothing. Type 2 diabetes costs $16,750/year. The math is not subtle."});
+  }},
+  {t:"Next month for sure.",xp:0,miles:80,risk:true,cb:function(){G.hp-=5;addLog("Next month becomes next year. A condition developing has no idea you are busy.","bad");}}
+]});
+
+EVENTS.push({id:"e_burnout",icon:"🔥",season:"AGE 29",title:"Running on Empty",npc:"jordan",
+explain:"<strong>What most people do not know:</strong> Your employer EAP gives you 6-8 free, completely confidential therapy sessions per year. Your manager never finds out.",
+body:"You cannot remember the last time you were not tired.\n\nJordan: 'You okay? Have not seen you at the gym in six weeks.'\n\nTwo headaches this week. Grinding your teeth at night.",
+learn:{tag:"EAP: Free Therapy Nobody Uses",type:"ins",text:"Employee Assistance Programs provide 6-8 free confidential therapy sessions per year plus financial and legal help. Your employer does NOT know you used it. Burnout causes measurable physical damage. It is a clinical condition, not a character flaw."},
+choices:[
+  {t:"Call the EAP. Jordan mentioned it.",xp:20,miles:80,cb:function(){
+    G.hp+=10;G.en+=15;addLog("<strong>Six sessions. Free. Confidential.</strong> Chronic stress is a physiological state. It causes real damage. Headaches drop from two a week to one a month.","good");
+  }},
+  {t:"Push through. Everyone is stressed.",xp:0,miles:80,risk:true,cb:function(){
+    G.hp-=12;G.en-=15;G.sv-=200;addLog("<strong>Three months later:</strong> second infection this month. Dr. Chen: 'This is what chronic stress does to an immune system.'","bad");
+  }}
+]});
+
+EVENTS.push({id:"e_layoff",icon:"📋",season:"MILE 450 - THE LAYOFF",title:"The Meeting Nobody Wants",npc:"maya",
+explain:"<strong>Before you walk in:</strong> If you lose employer coverage, you have 60 days to act. COBRA keeps your plan but you pay full premium (~$650/month). ACA Marketplace has income-based subsidies, often $100-200/month. Medicaid if income qualifies. Doing nothing is the most expensive choice.",
+body:"Maya asked you to come in at 9am. That is never good.\n\n'I am so sorry. Your role is eliminated. Last day in two weeks. Your coverage ends at end of month.'\n\nShe slides a packet across. 'You have options.'",
+learn:{tag:"Losing a Job Means Losing Coverage",type:"ins",text:"When you lose employer coverage you have a 60-day Special Enrollment Period. COBRA keeps your plan (~$650/month). ACA Marketplace has income-based subsidies. Medicaid if income qualifies. Never let coverage lapse -- one uninsured ER visit averages $2,200."},
+choices:[
+  {t:"Walk me through my options, Maya.",xp:25,miles:100,cb:function(){
+    addLog("<strong>You choose ACA Silver.</strong> $155/month after subsidy. Coverage active within the week.","good");
+    G.plan={name:"ACA Silver",ded:2000,oop:5000,er:200,rx:25,prem:155,net:"PPO"};
+    G.sv-=155;G.sh+=15;
+    addKnow({tag:"COBRA vs ACA When Laid Off",type:"ins",text:"COBRA preserves your deductible progress and existing doctors but averages $650/month. ACA Special Enrollment after job loss can be $100-200/month with subsidies. COBRA makes sense if you are close to meeting your deductible."});
+  }},
+  {t:"I will figure it out later.",xp:0,miles:100,risk:true,cb:function(){
+    G.sh-=25;G.sv-=8000;
+    addLog("<strong>You do not enroll.</strong> Thirty days later: appendicitis. No insurance. Bill: $31,000.","bad");
+    addKnow({tag:"Going Uninsured Is a Gamble",type:"ins",text:"Appendectomy without insurance: $33,000 average. ER visit: $2,200. ACA marketplace subsidies often make plans cheaper than people expect. Never go uninsured without checking the actual cost first."});
+  }}
+]});
+
+EVENTS.push({id:"e_surprise_bill",icon:"💸",season:"AGE 31",title:"The Bill From Someone You Never Met",npc:"sam",
+explain:"<strong>The No Surprises Act (2022):</strong> When you receive care at an in-network facility, out-of-network providers assigned to your case cannot bill you above in-network rates. This makes many surprise bills legally unenforceable.",
+body:"Valley Anesthesia Partners LLC. $2,400.\n\nFrom your knee surgery at your in-network hospital.\n\nYou never chose an anesthesiologist. One was assigned.",
+learn:{tag:"No Surprises Act 2022",type:"ins",text:"The No Surprises Act (January 2022) prohibits out-of-network providers at in-network facilities from billing above in-network rates for emergency care, anesthesia, radiology, and pathology. Dispute in writing. 40% of patients just pay. Do not be one of them."},
+choices:[
+  {t:"Call Sam in billing. Something is wrong.",xp:25,miles:80,cb:function(){
+    addLog("<strong>Sam:</strong> 'Out-of-network anesthesiologist at an in-network facility. The No Surprises Act makes this bill legally unenforceable. Dispute it in writing.'","good");
+    addLog("<strong>Bill eliminated.</strong> $2,400 you almost paid for no reason.","good");G.sh+=10;
+  }},
+  {t:"Just pay it. No time for this.",xp:0,miles:80,risk:true,cb:function(){
+    G.sv-=2400;addLog("<strong>You pay $2,400.</strong> You later learn the bill was unenforceable. Dispute retroactively. Refund issued. Wrong order, right result.","learn");G.sv+=2400;
+  }}
+]});
+
+EVENTS.push({id:"e_marriage",icon:"💍",season:"MILE 550 - NEW BEGINNINGS",title:"A New Party Member",npc:null,
+explain:"<strong>Marriage is a Qualifying Life Event.</strong> You get a 60-day Special Enrollment Period to change your coverage. One of the few times you can change plans outside open enrollment.",
+body:"You met Alex three years ago. Jordan introduced you.\n\nToday you are getting married.\n\nAlex is a freelancer. No employer coverage.\n\nOpen enrollment is next month. Figure this out.",
+learn:{tag:"Adding a Spouse to Coverage",type:"ins",text:"Marriage triggers a 60-day Special Enrollment Period. You can add a spouse to your employer plan or they can maintain their own ACA plan. Employer family coverage often costs less combined than two separate plans."},
+choices:[
+  {t:"Add Alex to your employer plan.",xp:15,miles:90,cb:function(){
+    G.sv-=400;G.party.push({name:"Alex",icon:"🧑",hp:80,role:"Spouse"});
+    addLog("<strong>Alex joins your plan.</strong> Premium up $400/month but cheaper than two separate plans.","good");
+  }},
+  {t:"Alex keeps their own ACA plan.",xp:10,miles:90,cb:function(){
+    G.sv-=155;G.party.push({name:"Alex",icon:"🧑",hp:80,role:"Spouse"});
+    addLog("<strong>Alex keeps ACA.</strong> More total cost, but Alex keeps existing doctors. Sometimes the right call.","learn");
+  }}
+]});
+
+EVENTS.push({id:"e_hsa",icon:"💰",season:"AGE 33",title:"The Account You Never Opened",npc:"maya",
+explain:"<strong>An HSA is the only triple-tax-advantaged account in America.</strong> Money goes in pre-tax, grows tax-free, spent on medical expenses tax-free. The money never expires.",
+body:"Open enrollment. Benefits packet on your desk.\n\nHSA section. Skipped every year.\n\nYour employer will contribute $500 if you open one.\n\n$500. Free. Just sitting there.",
+learn:{tag:"HSA Triple Tax Advantage",type:"money",text:"HSA is the only triple-tax-advantaged account in the U.S. Tax-deductible contributions in, tax-free growth, tax-free medical withdrawals. Rolls over forever. After 65 works like an IRA. 2024 max: $4,150 individual, $8,300 family."},
+choices:[
+  {t:"Open the HSA. Take the free $500.",xp:25,miles:80,cb:function(){
+    G.sv+=500;addLog("<strong>HSA opened.</strong> $500 free from employer. Add $200/month. Grows tax-free. Never expires.","good");
+  }},
+  {t:"Too complicated. Skip it again.",xp:0,miles:80,risk:true,cb:function(){
+    addLog("<strong>Another year without the HSA.</strong> $500 your employer was giving you evaporated. The triple tax advantage remains unclaimed.","bad");
+  }}
+]});
+
+EVENTS.push({id:"e_er_night",icon:"🚨",season:"MILE 650 - THE DIAGNOSIS",title:"3am in the ER",npc:null,
+explain:"<strong>EMTALA law:</strong> Emergency rooms must treat all patients regardless of insurance or ability to pay. You will be treated. You will get a bill. 80% of hospital bills contain errors. Always request an itemized bill before paying.",
+body:"Chest pain. Radiating down your left arm.\n\nAlex drives you to the ER.\n\nFour hours of tests: panic attack. Not a heart attack.\n\nRelief and embarrassment together.\n\nThen the bill arrives.",
+learn:{tag:"Always Request Itemized Bills",type:"money",text:"80% of hospital bills contain errors: duplicate charges, wrong codes, services not rendered. You have a legal right to an itemized bill. Always request one before paying. Average error found and removed: $1,200."},
+choices:[
+  {t:"Review the itemized bill before paying.",xp:20,miles:80,cb:function(){
+    addLog("<strong>23 line items.</strong> Duplicate charge: $420. Disputed. Removed. Bill corrected.","good");G.sv-=(G.plan.er-420);
+  }},
+  {t:"Just pay it and move on.",xp:0,miles:80,risk:true,cb:function(){
+    G.sv-=(G.plan.er+600);addLog("<strong>Paid without reviewing.</strong> Duplicate charge, upcode, facility fee: all paid. The hospital was not surprised.","bad");
+  }}
+]});
+
+EVENTS.push({id:"e_gender_screening",icon:"🩺",season:"AGE 35-40",title:"The Screening You Put Off",npc:"chen",
+explain:"<strong>Gender-specific screenings:</strong> Different genders have different free preventive care recommendations. All are $0 under ACA law.",
+body:AV.gender==="female"
+  ? "Dr. Chen's office: 'You are due for a mammogram and Pap smear. Both are completely free under your plan.'"
+  : AV.gender==="male"
+  ? "Dr. Chen's office: 'You are due for a prostate health discussion and colorectal screening. Both are free under ACA preventive care.'"
+  : "Dr. Chen's office: 'Let us review all your applicable preventive screenings. Several are due and all are free under your plan.'",
+learn:{tag:"Gender-Specific Preventive Care",type:"health",text:"ACA covers gender-specific screenings at $0: mammograms (women 40+), Pap smears (women 21+), prostate cancer screening discussions (men 55-69), colorectal screening (all adults 45+). Free under all non-grandfathered plans. Use them."},
+choices:[
+  {t:"Schedule them. They are free.",xp:25,miles:80,cb:function(){
+    G.hp+=10;G.sh+=8;addLog("<strong>Screenings done.</strong> All clear. Early detection changes everything.","good");
+  }},
+  {t:"I feel fine. Maybe next year.",xp:0,miles:80,risk:true,cb:function(){
+    G.hp-=5;addLog("You feel fine. That is how most serious conditions feel at first. The screening exists because you cannot tell from how you feel.","bad");
+  }}
+]});
+
+EVENTS.push({id:"e_denial",icon:"🚫",season:"AGE 40",title:"Claim Denied",npc:"priya",
+explain:"<strong>Your ACA rights:</strong> You can formally appeal any insurance denial. Internal appeals overturn decisions 40% of the time. External independent review overturns decisions 60% of the time.",
+body:"Insurance denied your specialist visit.\n\nReason: 'Not medically necessary.'\n\nDr. Chen prescribed it.\n\nPage two of the denial letter, smallest font: 'You have the right to appeal.'",
+learn:{tag:"You Can Always Appeal",type:"ins",text:"ACA law gives you the right to appeal any insurance denial. Internal appeals overturn decisions 40% of the time. External independent review overturns decisions 60% of the time. Submit in writing with your doctor's clinical notes."},
+choices:[
+  {t:"File a formal appeal. This is wrong.",xp:25,miles:80,cb:function(){
+    var won=Math.random()<.45;
+    if(won){addLog("<strong>Appeal won.</strong> The specialist visit is covered. This is how it is supposed to work.","good");G.sh+=10;}
+    else{addLog("<strong>Internal appeal denied.</strong> External review requested. Independent reviewer overturns insurer. Coverage approved.","good");G.sh+=8;}
+  }},
+  {t:"Just pay the specialist out of pocket.",xp:0,miles:80,risk:true,cb:function(){
+    G.sv-=800;addLog("<strong>You pay $800.</strong> The insurer's denial cost them nothing. Most people do exactly this. That is the business model.","bad");
+  }}
+]});
+
+EVENTS.push({id:"e_prediabetes",icon:"🩸",season:"MILE 750 - FAMILY CRISIS",title:"The Flag on the Blood Work",npc:"chen",
+explain:"<strong>Pre-diabetes by the numbers:</strong> 96 million Americans have it. 80% do not know. The CDC Diabetes Prevention Program is covered at $0 by most plans. Type 2 diabetes costs $16,750 per year.",
+body:"Annual physical. Dr. Chen reviews results.\n\n'Your A1C is 6.1. Pre-diabetes range.'\n\nShe waits.\n\n'Completely reversible. And the program to do it is covered by your plan at zero cost.'",
+learn:{tag:"Pre-Diabetes is Reversible",type:"health",text:"96 million Americans have pre-diabetes. 80% do not know. Lifestyle intervention reverses it in 58% of cases. CDC Diabetes Prevention Program covered at $0 by most plans. Type 2 diabetes costs $16,750 per year. Prevention costs almost nothing."},
+choices:[
+  {t:"Enroll in the free program immediately.",xp:30,miles:90,cb:function(){
+    G.hp+=12;G.sh+=10;addLog("<strong>DPP enrolled.</strong> 12 weeks in: A1C back to 5.6. No longer pre-diabetic. Cost: $0.","good");
+  }},
+  {t:"Change diet on my own.",xp:8,miles:90,cb:function(){
+    G.hp+=4;addLog("You try. Inconsistently. The structured program has 58% reversal rate. Self-directed: much lower.","learn");
+  }},
+  {t:"Ignore it. Just a number.",xp:0,miles:90,risk:true,cb:function(){
+    G.hp-=10;G.sv-=2000;addLog("<strong>Two years later:</strong> full Type 2 diagnosis. $16,750/year. This was preventable.","bad");
+  }}
+]});
+
+EVENTS.push({id:"e_parent",icon:"👨‍👩‍👧",season:"AGE 48",title:"Mom is in the Hospital",npc:"sam",
+explain:"<strong>Medicare covers 80% of most costs.</strong> The remaining 20% can be catastrophic without supplemental coverage. Nonprofit hospitals must offer charity care by IRS law -- but they will not tell you this.",
+body:"Your mother fell. Hip fracture. Emergency surgery.\n\nShe is 71. On Medicare.\n\nThe hospital is billing for things Medicare should have covered.\n\nShe asks you to help.",
+learn:{tag:"Medicare Has Gaps",type:"ins",text:"Original Medicare covers 80% of most costs. Without supplemental Medigap coverage, you owe 20% with no maximum. A $500,000 stay leaves a $100,000 bill. Medigap plans cap or eliminate this for $100-300/month."},
+choices:[
+  {t:"Call Sam in billing. Review every charge.",xp:20,miles:90,cb:function(){
+    G.sv+=1200;addLog("<strong>Sam helps.</strong> Three charges billed incorrectly. $1,200 removed. Your mother cries when you tell her.","good");
+    addLog("You research Medigap supplemental plans for her. She did not have one. That changes this month.","learn");
+  }},
+  {t:"Tell her to just pay it.",xp:0,miles:90,risk:true,cb:function(){addLog("<strong>She pays $1,200 she did not owe.</strong> Hospital billing counts on this.","bad");}}
+]});
+
+EVENTS.push({id:"e_bigbill",icon:"💸",season:"MILE 900 - THE BIG BILL",title:"The Year Everything Happened",npc:null,
+explain:"<strong>Your out-of-pocket maximum is working:</strong> After you spend your OOP max in a year, insurance covers 100% of remaining covered in-network services until December 31st. Most people never reach it. This year, you did.",
+body:"Alex's surgery. Your hospitalization for pneumonia. Your mother's second fall.\n\nOctober. You have spent $18,000 in medical costs.\n\nA letter from your insurer:\n\n'Out-of-Pocket Maximum reached. Remaining covered services this year: $0 cost to you.'",
+learn:{tag:"OOP Max Is Your Shield",type:"ins",text:"The Out-of-Pocket Maximum is the most you will pay in one year. After reaching it, insurance covers 100% of covered in-network services until December 31st. Know your OOP max. In a catastrophic year it is the difference between financial survival and medical bankruptcy."},
+choices:[
+  {t:"Use every covered service before December 31.",xp:25,miles:100,cb:function(){
+    G.hp+=15;addLog("<strong>Three months of free care.</strong> PT, prescriptions, referrals, screenings. $4,200 in care at $0.","good");
+  }},
+  {t:"Just recover. Do not push it.",xp:5,miles:100,cb:function(){
+    addLog("You rest. The care you delayed was free until December 31st. Deductible reset January 1st.","learn");
+  }}
+]});
+
+EVENTS.push({id:"e_retire_gap",icon:"🏡",season:"MILE 1050 - PRE-RETIREMENT",title:"The Medicare Gap",npc:null,
+explain:"<strong>Medicare starts at 65.</strong> If you retire before 65, you need to bridge the coverage gap yourself. Early retirement healthcare costs are the most common reason early retirement plans fail.",
+body:"You want to retire at 62.\n\nFinancial advisor says the savings will cover it.\n\nThen you ask about health insurance.\n\nMedicare starts at 65.\n\n'So what do I do for three years?'\n\nThe room gets quiet.",
+learn:{tag:"The Medicare Gap",type:"ins",text:"Medicare starts at 65. Early retirees must bridge the gap with COBRA, ACA Marketplace, or a spouse's plan. At retirement income, ACA subsidies can be significant. This cost is the most common reason early retirement fails. Plan for it specifically."},
+choices:[
+  {t:"Plan the bridge coverage now. Three years out.",xp:25,miles:90,cb:function(){
+    addLog("<strong>You plan ahead.</strong> ACA Silver at retirement income: $280/month. Three years: $10,080 built into the plan. Most people skip this until 64.","good");G.sh+=15;
+  }},
+  {t:"Cross that bridge when we come to it.",xp:0,miles:90,risk:true,cb:function(){
+    G.sv-=8000;addLog("<strong>62 arrives.</strong> ACA plans at retirement income: $680/month. Your retirement math was wrong.","bad");
+  }}
+]});
+
+EVENTS.push({id:"e_finale",icon:"🌅",season:"MILE 1200 - JOURNEY'S END",title:"You Made It",npc:null,explain:null,
+body:"Medicare card in the mail.\n\nYou think about that first HR packet Maya slid across the desk.\n\nThe ER at 3am. The $2,400 bill you almost paid. The knee you almost walked off. The pre-diabetes you caught in time.\n\nIt was not kind.\n\nBut you knew it. And knowing it made all the difference.",
+learn:null,
+choices:[{t:"See how it all turned out.",xp:0,miles:0,cb:function(){endGame("complete");}}]});
+
+// ── EVENT QUEUE ────────────────────────────────────────
+var eventQueue=[];
+function buildQueue(){
+  eventQueue=EVENTS.slice();
+  WAYPOINTS.forEach(function(w){w._shown=false;});
+}
+function nextEvent(){
+  if(G.done)return;
+  if(eventQueue.length===0){endGame("complete");return;}
+  openModal(eventQueue.shift());
+}
+
+// ── END GAME ──────────────────────────────────────────
+function endGame(reason){
+  if(G.done)return;G.done=true;
+  var art,h,sub,epith;
+  if(reason==="dead"){
+    art="💀";h="Game Over";sub="You gave it everything. It took more.";
+    epith="Here lies "+(AV.name||"the traveler")+". The health ran out before everything else did. Next time: sleep more, eat better, and pick a plan with a lower OOP max.";
+  }else if(reason==="broke"){
+    art="💸";h="Medical Bankruptcy";sub="You made it this far. The bills did not.";
+    epith="Here lies "+(AV.name||"the traveler")+". Medical debt was the most American way to not make it. $"+Math.abs(Math.round(G.sv)).toLocaleString()+" in the hole.";
+  }else{
+    var great=G.hp>60&&G.sv>10000&&G.know.length>=8;
+    art=great?"🌅":"🌾";h=great?"Covered":"You Made It";
+    sub=great?"Arrived healthy, informed, and financially intact.":"It left marks. But you are here.";
+    epith=great
+      ?(AV.name||"The traveler")+" walked every mile. They learned how the system works and used that knowledge to protect themselves and the people they loved. That is the whole secret."
+      :(AV.name||"The traveler")+" made it to the end. The ones who prepared survived. You did.";
+  }
+  document.getElementById("end-art").textContent=art;
+  document.getElementById("end-h").textContent=h;
+  document.getElementById("end-sub").textContent=sub;
+  document.getElementById("end-epitaph").textContent=epith;
+  // draw final avatar aged and health-adjusted
+  drawAv("end-av-cv",G.hp,G.age);
+  var rows=[
+    ["Traveler",(AV.name||"Unknown")+" ("+(AV.gender.charAt(0).toUpperCase()+AV.gender.slice(1))+")"],
+    ["Years Lived",Math.min(43,Math.round(G.miles/30))+" years"],
+    ["Final Health",Math.round(G.hp)+"%"],
+    ["Savings","$"+Math.max(0,Math.round(G.sv)).toLocaleString()],
+    ["Miles Traveled",G.miles+" of 1,200"],
+    ["BMI at Start",bmi()+" ("+bmiLabel()+")"],
+    ["Knowledge Collected",G.know.length+" facts"],
+    ["Wisdom Level","Level "+G.lv]
+  ];
+  document.getElementById("end-scroll").innerHTML=rows.map(function(r){
+    return "<div class='end-row'><span style='color:#6a5a3a'>"+r[0]+"</span><span style='font-weight:800;color:#e8c060'>"+r[1]+"</span></div>";
+  }).join("");
+  var lh="<div class='el-h'>What You Learned Along the Way</div>";
+  if(!G.know.length)lh+="<div style='color:#6a5a3a;font-size:13px;font-style:italic'>Life teaches those who ask questions.</div>";
+  G.know.forEach(function(k){
+    var c=k.type==="ins"?"#4a7aaa":k.type==="money"?"#c8900a":"#2a7a2a";
+    lh+="<div class='el-item'><span class='el-tag' style='background:"+c+"'>"+k.tag+"</span>"+k.text.slice(0,130)+"...</div>";
+  });
+  document.getElementById("end-learned").innerHTML=lh;
+  showPg("p3");
+}
+
+// ── SETUP ─────────────────────────────────────────────
+function showPg(id){
+  document.querySelectorAll(".pg").forEach(function(p){p.classList.remove("on");p.style.display="none";});
+  var el=document.getElementById(id);
+  el.classList.add("on");
+  el.style.display=(id==="p0"||id==="p3")?"flex":"block";
+  window.scrollTo(0,0);
+}
+
+function startGame(){
+  var n=document.getElementById("nm").value.trim();
+  if(!n){document.getElementById("nm").focus();toast("Who are you, traveler?");return;}
+  AV.name=n;C.name=n;
+  initG();buildQueue();showPg("p2");refreshHUD();
+  setTimeout(function(){
+    drawTrail();
+    addLog("<strong>"+(AV.name||"You")+" begins the journey.</strong> Age "+AV.age+". "+fmtSalary(G.salary)+" salary, $"+Math.round(G.sv).toLocaleString()+" saved up, and "+G.plan.name+" for coverage. 1,200 miles to retirement.","event");
+    addLog("Life does not care if you are ready.","");
+    renderLog();
+    setTimeout(function(){nextEvent();},400);
+  },80);
+}
+
+updateBadge();
+drawAv("av-cv",80,AV.age);
+</script>
+</body>
+</html>
